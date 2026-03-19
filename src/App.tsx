@@ -317,12 +317,12 @@ function App() {
           <h1>Escape the</h1>
           <h1 className="red">Software Matrix.</h1>
           <p>AI systems and automation tools designed to wake your business up.</p>
-          <button type="button" onClick={handleModalOpen}>
+          <button type="button" className="primary-cta" onClick={handleModalOpen}>
             Take The Red Pill
           </button>
         </section>
 
-        <section className="products">
+        <section className="products section-shell">
           {productCards.map((card) => (
             <article className="card" key={card.title}>
               <h3>{card.title}</h3>
@@ -347,7 +347,7 @@ function App() {
             You take the blue pill and the story ends.<br />
             You take the red pill and see how deep the rabbit hole goes.
           </p>
-          <button type="button" onClick={handleModalOpen}>
+          <button type="button" className="primary-cta" onClick={handleModalOpen}>
             Take The Red Pill
           </button>
         </section>

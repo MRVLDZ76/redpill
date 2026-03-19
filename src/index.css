@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
+  --shell-width: 1100px;
+  --shell-gutter: 20px;
   font-family: 'Inter', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -187,7 +189,7 @@ h2 {
   line-height: 1.6;
 }
 
-button {
+.primary-cta {
   padding: 16px 40px;
   border: none;
   border-radius: 40px;
@@ -203,18 +205,21 @@ button {
   letter-spacing: 2px;
 }
 
-button:hover {
+.primary-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 60px rgba(255, 0, 0, 0.8);
+}
+
+.section-shell {
+  width: min(var(--shell-width), calc(100% - (var(--shell-gutter) * 2)));
+  margin-inline: auto;
 }
 
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
-  padding: 120px 40px;
-  max-width: 1100px;
-  margin: auto;
+  gap: 28px;
+  padding: 110px 0;
 }
 
 .card {
@@ -234,6 +239,9 @@ button:hover {
   transition: 0.3s;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
 }
 
 .card::before {
@@ -257,15 +265,23 @@ button:hover {
 }
 
 .card h3 {
-  margin-top: 0;
+  margin: 0;
   font-size: 28px;
+  line-height: 1.1;
 }
 
 .card small {
   color: #16ff9c;
   display: block;
-  margin-bottom: 10px;
+  margin: 10px 0 16px;
   letter-spacing: 1px;
+}
+
+.card p {
+  margin: 0;
+  color: #c7dbd1;
+  line-height: 1.65;
+  flex: 1;
 }
 
 .access-link {
@@ -297,15 +313,32 @@ button:hover {
   border-radius: 999px;
   padding: 10px 16px;
   box-shadow: none;
+  border: 1px solid rgba(22, 255, 156, 0.5);
+  color: #16ff9c;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  background: rgba(5, 20, 13, 0.8);
+  cursor: pointer;
 }
 
 .access-button:hover {
   transform: none;
+  color: #02100b;
+  background: #16ff9c;
+  box-shadow: 0 0 20px rgba(22, 255, 156, 0.4);
 }
 
 .section {
   padding: 140px 20px;
   text-align: center;
+}
+
+.section h2,
+.section p {
+  max-width: 760px;
+  margin-inline: auto;
 }
 
 .section p {
@@ -315,8 +348,8 @@ button:hover {
 }
 
 .matrix-footer {
-  margin: 40px auto 0;
-  width: min(1100px, calc(100% - 40px));
+  margin: 28px auto 44px;
+  width: min(var(--shell-width), calc(100% - (var(--shell-gutter) * 2)));
   border: 1px solid rgba(22, 255, 156, 0.35);
   border-radius: 16px;
   background:
@@ -657,11 +690,13 @@ button:hover {
   }
 
   .products {
-    padding: 90px 20px;
+    padding: 86px 0;
+    gap: 18px;
   }
 
   .card {
     padding: 28px;
+    min-height: 250px;
   }
 
   .section {
@@ -671,6 +706,7 @@ button:hover {
   .matrix-footer {
     width: calc(100% - 24px);
     margin-top: 24px;
+    margin-bottom: 24px;
   }
 
   .matrix-footer-inner {
