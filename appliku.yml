@@ -1,0 +1,12 @@
+"build_settings":
+  "build_image": "node-20-yarn"
+  "environment_variables":
+    - "name": "VITE_CONTACT_API_URL"
+      "value": "https://backend.prompt.tax/api/contact/landing/"
+  "build_command": "yarn build"
+  "container_port": 3000
+"services":
+  "web":
+    "scale": 1
+    "command": "npm run start"
+"databases": {}
