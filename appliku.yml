@@ -8,5 +8,5 @@
 "services":
   "web":
     "scale": 1
-    "command": "npm run start"
+    "command": "yarn start"
 "databases": {}
