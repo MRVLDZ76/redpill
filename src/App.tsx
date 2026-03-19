@@ -351,6 +351,20 @@ function App() {
             Take The Red Pill
           </button>
         </section>
+
+        <footer className="matrix-footer" aria-label="Company contact information">
+          <div className="matrix-footer-inner">
+            <p className="matrix-footer-label">ACCESS NODE: UNITED STATES</p>
+            <h3>United States</h3>
+            <p>931 NE 199TH ST APT 203 Miami, FL, United States, Florida 33179</p>
+            <p>
+              Call:{' '}
+              <a href="tel:+17866003010" className="footer-phone-link">
+                786 600 3010
+              </a>
+            </p>
+          </div>
+        </footer>
       </main>
 
       <div
