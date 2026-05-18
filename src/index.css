@@ -127,6 +127,7 @@ body {
 
 .hero {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -217,7 +218,7 @@ h2 {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: 28px;
   padding: 110px 0;
 }
@@ -684,6 +685,13 @@ h2 {
   }
 }
 
+/* Hide decorative cursor glow on touch/pointer-coarse devices */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
 @media (max-width: 960px) {
   .hero {
     padding: 32px 20px;
@@ -768,5 +776,129 @@ h2 {
     left: 6%;
     right: auto;
     bottom: 3%;
+  }
+}
+
+/* ─── Small screens (≤ 480px) ──────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .hero {
+    padding: 24px 16px;
+  }
+
+  .pill-mark {
+    width: 120px;
+    height: 46px;
+    margin-bottom: 28px;
+  }
+
+  .primary-cta {
+    width: 100%;
+    max-width: 340px;
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+
+  .products {
+    padding: 60px 0;
+    gap: 14px;
+  }
+
+  .card {
+    padding: 24px 20px;
+    min-height: auto;
+  }
+
+  .section {
+    padding: 72px 16px;
+  }
+
+  /* Modal: switch from image-overlay to a normal scrollable form layout */
+  .modal-wrapper {
+    padding: 8px;
+    align-items: flex-start;
+    overflow-y: auto;
+  }
+
+  .terminal-modal {
+    width: 100%;
+    height: auto;
+    min-height: unset;
+    overflow: visible;
+    background-image: none;
+    padding: 52px 20px 20px;
+    margin: auto;
+  }
+
+  .terminal-modal form {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: auto;
+    width: 100%;
+  }
+
+  .seamless-input {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 12px 14px;
+  }
+
+  #alias,
+  #email,
+  #message {
+    position: static;
+    width: 100%;
+    height: auto;
+    top: auto;
+    left: auto;
+  }
+
+  #message {
+    height: 110px;
+  }
+
+  .extra-fields {
+    position: static;
+    width: 100%;
+    top: auto;
+    right: auto;
+    left: auto;
+  }
+
+  .consent-wrapper {
+    position: static;
+    width: 100%;
+    bottom: auto;
+    right: auto;
+    left: auto;
+  }
+
+  .terminal-submit {
+    position: static;
+    width: 100%;
+    height: 52px;
+    bottom: auto;
+    right: auto;
+    left: auto;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  .submit-status {
+    position: static;
+    bottom: auto;
+    right: auto;
+    left: auto;
+    margin-top: 4px;
+  }
+
+  .close-hitbox {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
   }
 }
