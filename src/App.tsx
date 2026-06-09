@@ -16,6 +16,7 @@ type ProductCard = {
   description: string
   href?: string
   cta: string
+  comingSoon?: boolean
 }
 
 const initialForm: ContactPayload = {
@@ -50,6 +51,22 @@ const productCards: ProductCard[] = [
     description: 'Generate content, publish books, and automate social media campaigns using AI.',
     href: 'https://studio.mageek.dev',
     cta: 'Access studio.mageek.dev',
+  },
+  {
+    title: 'SemWeb Academy',
+    subtitle: 'KNOWLEDGE GRAPHS · RAG · AGENTS',
+    description:
+      'A professional learning environment for knowledge graphs, RAG, agents, MLOps and the data plumbing underneath — runnable labs, instant validation, and a concept map that keeps prerequisites visible.',
+    href: 'https://semweb.academy',
+    cta: 'Access semweb.academy',
+  },
+  {
+    title: 'Ontolingent',
+    subtitle: 'ENTERPRISE KNOWLEDGE, MADE COMPUTABLE',
+    description:
+      'Ontology, retrieval, agents and governance in one tenant-isolated system of record for regulated work.',
+    cta: 'Awaiting Activation',
+    comingSoon: true,
   },
   {
     title: 'Nebuchadnezzar Node',
@@ -324,11 +341,26 @@ function App() {
 
         <section className="products section-shell">
           {productCards.map((card) => (
-            <article className="card" key={card.title}>
+            <article className={`card${card.comingSoon ? ' card-coming-soon' : ''}`} key={card.title}>
+              {card.comingSoon && (
+                <span className="coming-soon-badge" aria-label="Coming soon">
+                  <span className="coming-soon-dot" /> TRANSMISSION INCOMING
+                </span>
+              )}
               <h3>{card.title}</h3>
               <small>{card.subtitle}</small>
               <p>{card.description}</p>
-              {card.href ? (
+              {card.comingSoon ? (
+                <div className="coming-soon-line" aria-hidden="true">
+                  <span className="coming-soon-prompt">{'>'}</span>
+                  <span className="coming-soon-typing">decrypting handshake&hellip;</span>
+                </div>
+              ) : null}
+              {card.comingSoon ? (
+                <span className="access-link access-button access-link-disabled" aria-disabled="true">
+                  {card.cta}
+                </span>
+              ) : card.href ? (
                 <a className="access-link" href={card.href} target="_blank" rel="noreferrer">
                   {card.cta}
                 </a>
@@ -339,6 +371,45 @@ function App() {
               )}
             </article>
           ))}
+        </section>
+
+        <section className="protocol section-shell" aria-labelledby="protocol-title">
+          <header className="protocol-head">
+            <span className="protocol-tag">{'// OPERATOR PROTOCOL'}</span>
+            <h2 id="protocol-title">
+              Three steps to <span className="red">unplug</span>.
+            </h2>
+            <p>
+              Every engagement follows the same path: find the loop draining your team, replace it with an agent, then
+              hand back the time it stole.
+            </p>
+          </header>
+          <ol className="protocol-steps">
+            <li className="protocol-step">
+              <span className="protocol-step-num">01</span>
+              <h3>Identify the glitch</h3>
+              <p>
+                We map the workflow, the tools and the humans inside it. Bottlenecks, manual handoffs and silent rework
+                get tagged.
+              </p>
+            </li>
+            <li className="protocol-step">
+              <span className="protocol-step-num">02</span>
+              <h3>Inject the agent</h3>
+              <p>
+                We build, deploy and integrate the AI system — tax engine, knowledge graph, retrieval pipeline or
+                bespoke agent — directly into your stack.
+              </p>
+            </li>
+            <li className="protocol-step">
+              <span className="protocol-step-num">03</span>
+              <h3>Reclaim the loop</h3>
+              <p>
+                Your team stops shipping the same task twice. Outputs are governed, auditable, and tenant-isolated by
+                default.
+              </p>
+            </li>
+          </ol>
         </section>
 
         <section className="section">
@@ -377,67 +448,100 @@ function App() {
         }}
       >
         <div className="terminal-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+          <div className="terminal-modal-bg" aria-hidden="true" />
           <button type="button" className="close-hitbox" onClick={handleModalClose} aria-label="Close dialog" />
+          <header className="terminal-modal-header" aria-hidden="true">
+            <span className="terminal-modal-status">
+              <span className="terminal-modal-dot" /> SECURE LINE ESTABLISHED
+            </span>
+            <span className="terminal-modal-meta">NODE / NEBUCHADNEZZAR · CHANNEL 01</span>
+          </header>
           <form id="secure-form" onSubmit={handleSubmit}>
-            <h3 id="contact-title" className="sr-only">
-              Contact Transmission
-            </h3>
+            <h3 id="contact-title" className="terminal-modal-title">Contact Transmission</h3>
+            <p className="terminal-modal-subtitle">
+              Drop your signal. We respond inside 24 hours, usually faster.
+            </p>
 
-            <input
-              type="text"
-              id="alias"
-              name="name"
-              className="seamless-input"
-              placeholder=">_"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="seamless-input"
-              placeholder=">_"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
-            <textarea
-              id="message"
-              name="message"
-              className="seamless-input"
-              placeholder=">_"
-              value={formData.message}
-              onChange={handleInputChange}
-              required
-            />
+            <div className="form-grid">
+              <label className="field">
+                <span className="field-label">{'> ALIAS'}</span>
+                <input
+                  type="text"
+                  id="alias"
+                  name="name"
+                  className="seamless-input"
+                  placeholder="Your name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
 
-            <div className="extra-fields">
-              <input
-                type="text"
-                name="company"
-                placeholder="Company"
-                value={formData.company}
-                onChange={handleInputChange}
-                required
-              />
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                required
-              />
-              <input
-                type="text"
-                name="subject"
-                placeholder="Subject"
-                value={formData.subject}
-                onChange={handleInputChange}
-                required
-              />
+              <label className="field">
+                <span className="field-label">{'> COMM CHANNEL'}</span>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className="seamless-input"
+                  placeholder="you@domain.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+
+              <label className="field">
+                <span className="field-label">{'> COMPANY'}</span>
+                <input
+                  type="text"
+                  name="company"
+                  className="seamless-input"
+                  placeholder="Organization"
+                  value={formData.company}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+
+              <label className="field">
+                <span className="field-label">{'> PHONE'}</span>
+                <input
+                  type="tel"
+                  name="phone"
+                  className="seamless-input"
+                  placeholder="+1 ..."
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+
+              <label className="field field-full">
+                <span className="field-label">{'> SUBJECT'}</span>
+                <input
+                  type="text"
+                  name="subject"
+                  className="seamless-input"
+                  placeholder="What is this about?"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+
+              <label className="field field-full">
+                <span className="field-label">{'> THE GLITCH (your message)'}</span>
+                <textarea
+                  id="message"
+                  name="message"
+                  className="seamless-input"
+                  placeholder="Describe what should be automated, what is broken, or who you need to reach..."
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
             </div>
 
             <div className="consent-wrapper">
@@ -455,7 +559,7 @@ function App() {
               {submitState === 'sending' && 'TRANSMITTING...'}
               {submitState === 'success' && 'SIGNAL SENT'}
               {submitState === 'error' && 'RETRY TRANSMISSION'}
-              {submitState === 'idle' && 'Transmit Data'}
+              {submitState === 'idle' && 'TRANSMIT DATA'}
             </button>
 
             {errorMessage && <p className="submit-status">{errorMessage}</p>}
