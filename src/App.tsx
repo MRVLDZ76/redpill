@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
+import KnowledgeGraph from './KnowledgeGraph'
 
 type ContactPayload = {
   company: string
@@ -8,15 +9,6 @@ type ContactPayload = {
   name: string
   phone: string
   subject: string
-}
-
-type ProductCard = {
-  title: string
-  subtitle: string
-  description: string
-  href?: string
-  cta: string
-  comingSoon?: boolean
 }
 
 const initialForm: ContactPayload = {
@@ -29,52 +21,6 @@ const initialForm: ContactPayload = {
 }
 
 const API_URL = import.meta.env.VITE_CONTACT_API_URL ?? 'https://backend.prompt.tax/api/contact/landing/'
-
-const productCards: ProductCard[] = [
-  {
-    title: 'PromptTax',
-    subtitle: 'AI TAX ENGINE',
-    description: 'Automate Schedule K-1 workflows, BOIR filings and complex tax preparation with AI.',
-    href: 'https://prompt.tax',
-    cta: 'Access prompt.tax',
-  },
-  {
-    title: 'OnlyPPL',
-    subtitle: 'HUMAN CONNECTION AI',
-    description: 'Describe a problem and instantly connect to the exact person who can solve it.',
-    href: 'https://mageek.dev',
-    cta: 'Access mageek.dev',
-  },
-  {
-    title: 'Studio',
-    subtitle: 'CREATIVE AI ENGINE',
-    description: 'Generate content, publish books, and automate social media campaigns using AI.',
-    href: 'https://studio.mageek.dev',
-    cta: 'Access studio.mageek.dev',
-  },
-  {
-    title: 'SemWeb Academy',
-    subtitle: 'KNOWLEDGE GRAPHS · RAG · AGENTS',
-    description:
-      'A professional learning environment for knowledge graphs, RAG, agents, MLOps and the data plumbing underneath — runnable labs, instant validation, and a concept map that keeps prerequisites visible.',
-    href: 'https://semweb.academy',
-    cta: 'Access semweb.academy',
-  },
-  {
-    title: 'Ontolingent',
-    subtitle: 'ENTERPRISE KNOWLEDGE, MADE COMPUTABLE',
-    description:
-      'Ontology, retrieval, agents and governance in one tenant-isolated system of record for regulated work.',
-    cta: 'Awaiting Activation',
-    comingSoon: true,
-  },
-  {
-    title: 'Nebuchadnezzar Node',
-    subtitle: 'MATRIX SIGNAL OPS',
-    description: 'Route encrypted prompts through a live command node and transmit secure outreach data.',
-    cta: 'Open Signal Channel',
-  },
-]
 
 function App() {
   const [preloaderHidden, setPreloaderHidden] = useState(false)
@@ -339,39 +285,7 @@ function App() {
           </button>
         </section>
 
-        <section className="products section-shell">
-          {productCards.map((card) => (
-            <article className={`card${card.comingSoon ? ' card-coming-soon' : ''}`} key={card.title}>
-              {card.comingSoon && (
-                <span className="coming-soon-badge" aria-label="Coming soon">
-                  <span className="coming-soon-dot" /> TRANSMISSION INCOMING
-                </span>
-              )}
-              <h3>{card.title}</h3>
-              <small>{card.subtitle}</small>
-              <p>{card.description}</p>
-              {card.comingSoon ? (
-                <div className="coming-soon-line" aria-hidden="true">
-                  <span className="coming-soon-prompt">{'>'}</span>
-                  <span className="coming-soon-typing">decrypting handshake&hellip;</span>
-                </div>
-              ) : null}
-              {card.comingSoon ? (
-                <span className="access-link access-button access-link-disabled" aria-disabled="true">
-                  {card.cta}
-                </span>
-              ) : card.href ? (
-                <a className="access-link" href={card.href} target="_blank" rel="noreferrer">
-                  {card.cta}
-                </a>
-              ) : (
-                <button type="button" className="access-link access-button" onClick={handleModalOpen}>
-                  {card.cta}
-                </button>
-              )}
-            </article>
-          ))}
-        </section>
+        <KnowledgeGraph onContactClick={handleModalOpen} />
 
         <section className="protocol section-shell" aria-labelledby="protocol-title">
           <header className="protocol-head">

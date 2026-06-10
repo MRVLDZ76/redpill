@@ -14,15 +14,22 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   background: #000;
   color: #fff;
   overflow-x: hidden;
+  width: 100%;
 }
 
 #root {
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .font-mono {
@@ -38,8 +45,8 @@ body {
 
 .cursor-glow {
   position: fixed;
-  width: 500px;
-  height: 500px;
+  width: min(500px, 100vw);
+  height: min(500px, 100vw);
   background: radial-gradient(circle, rgba(255, 0, 0, 0.15), transparent 70%);
   pointer-events: none;
   mix-blend-mode: screen;
@@ -160,14 +167,15 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 40px;
+  padding: 40px 20px;
   position: relative;
+  overflow: hidden;
 }
 
 .hero-glow {
   position: absolute;
-  width: 800px;
-  height: 800px;
+  width: min(800px, 100vw);
+  height: min(800px, 100vw);
   background: radial-gradient(circle, rgba(255, 0, 0, 0.2), transparent 70%);
   filter: blur(120px);
   z-index: -1;
