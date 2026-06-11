@@ -39,6 +39,34 @@ function App() {
   const [toastMessage, setToastMessage] = useState('')
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
+  const navLinks = ['Products', 'Solutions', 'About', 'Resources']
+
+  const metrics = [
+    { value: '6', label: 'Connected Nodes' },
+    { value: '12', label: 'Active Agents' },
+    { value: '128K+', label: 'Knowledge Entities' },
+    { value: '99.9%', label: 'System Uptime' },
+  ]
+
+  const footerColumns = [
+    {
+      title: 'Products',
+      links: ['PromptTax', 'Ontologent', 'Studio', 'OnlyPPL', 'Recurring22AI Node', 'Series Academy'],
+    },
+    {
+      title: 'Solutions',
+      links: ['AI Automation', 'Knowledge Graphs', 'Agentic Workflows', 'Data Intelligence', 'Workflow Optimization', 'Enterprise AI'],
+    },
+    {
+      title: 'Resources',
+      links: ['Docs', 'Case Studies', 'Blog', 'Developer Portal', 'Status'],
+    },
+    {
+      title: 'Company',
+      links: ['About Us', 'Careers', 'Contact', 'Privacy Policy', 'Terms of Service'],
+    },
+  ]
+
   useEffect(() => {
     const timers = [
       window.setTimeout(() => setAnimateDrop(true), 1000),
@@ -274,18 +302,72 @@ function App() {
       </div>
 
       <main className={`page ${preloaderHidden ? 'page-ready' : ''}`}>
-        <section className="hero" id="hero-section">
-          <div className="hero-glow" />
-          <div className="pill-mark" />
-          <h1>Escape the</h1>
-          <h1 className="red">Software Matrix.</h1>
-          <p>AI systems and automation tools designed to wake your business up.</p>
-          <button type="button" className="primary-cta" onClick={handleModalOpen}>
+        <header className="site-header section-shell" aria-label="Primary navigation">
+          <a className="brand" href="#hero-section" aria-label="Red Pill Software home">
+            <span className="brand-mark" aria-hidden="true" />
+            <span className="brand-copy">
+              <strong>Red Pill</strong>
+              <span>Software</span>
+            </span>
+          </a>
+          <nav className="site-nav">
+            {navLinks.map((link) => (
+              <a key={link} href="#hero-section">
+                {link}
+              </a>
+            ))}
+          </nav>
+          <button type="button" className="nav-cta" onClick={handleModalOpen}>
             Take The Red Pill
           </button>
+        </header>
+
+        <section className="hero section-shell" id="hero-section">
+          <div className="hero-noise" aria-hidden="true" />
+          <div className="hero-radial" aria-hidden="true" />
+          <div className="hero-copy">
+            <div className="pill-mark" aria-hidden="true">
+              <span className="pill-half pill-half-solid" />
+              <span className="pill-half pill-half-glass" />
+            </div>
+            <h1>
+              Escape the
+              <span className="red">Software Matrix.</span>
+            </h1>
+            <p>AI systems and automation tools designed to wake your business up.</p>
+            <button type="button" className="primary-cta" onClick={handleModalOpen}>
+              <span>Take The Red Pill</span>
+            </button>
+          </div>
         </section>
 
-        <KnowledgeGraph onContactClick={handleModalOpen} />
+        <section className="graph-section section-shell" aria-labelledby="graph-title">
+          <div className="graph-frame">
+            <div className="graph-frame-head">
+              <div>
+                <p className="graph-eyebrow">System Network</p>
+                <h2 id="graph-title">Live Knowledge Graph</h2>
+              </div>
+              <div className="graph-legend" aria-label="Graph legend">
+                <span><i className="legend-dot legend-system" />System</span>
+                <span><i className="legend-dot legend-agent" />Agent</span>
+                <span><i className="legend-dot legend-resource" />Resource</span>
+                <span><i className="legend-dot legend-connection" />Connection</span>
+              </div>
+            </div>
+
+            <KnowledgeGraph onContactClick={handleModalOpen} />
+
+            <div className="graph-metrics" aria-label="System metrics">
+              {metrics.map((metric) => (
+                <article key={metric.label} className="metric-card">
+                  <strong>{metric.value}</strong>
+                  <span>{metric.label}</span>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
         <section className="protocol section-shell" aria-labelledby="protocol-title">
           <header className="protocol-head">
@@ -326,28 +408,62 @@ function App() {
           </ol>
         </section>
 
-        <section className="section">
-          <h2>This is your last chance.</h2>
+        <section className="final-cta section-shell" aria-labelledby="final-cta-title">
+          <h2 id="final-cta-title">This is your last chance.</h2>
           <p>
             You take the blue pill and the story ends.<br />
             You take the red pill and see how deep the rabbit hole goes.
           </p>
           <button type="button" className="primary-cta" onClick={handleModalOpen}>
-            Take The Red Pill
+            <span>Take The Red Pill</span>
           </button>
         </section>
 
-        <footer className="matrix-footer" aria-label="Company contact information">
-          <div className="matrix-footer-inner">
-            <p className="matrix-footer-label">ACCESS NODE: UNITED STATES</p>
-            <h3>United States</h3>
-            <p>931 NE 199TH ST APT 203 Miami, FL, United States, Florida 33179</p>
-            <p>
-              Call:{' '}
-              <a href="tel:+17866003010" className="footer-phone-link">
-                786 600 3010
+        <footer className="site-footer section-shell" aria-label="Company footer">
+          <div className="site-footer-grid">
+            <div className="footer-brand-block">
+              <a className="brand footer-brand" href="#hero-section" aria-label="Red Pill Software home">
+                <span className="brand-mark" aria-hidden="true" />
+                <span className="brand-copy">
+                  <strong>Red Pill</strong>
+                  <span>Software</span>
+                </span>
               </a>
-            </p>
+              <p>AI systems and automation tools that wake your business up.</p>
+              <div className="footer-socials" aria-label="Social links">
+                <span>X</span>
+                <span>in</span>
+                <span>yt</span>
+                <span>gh</span>
+              </div>
+            </div>
+
+            {footerColumns.map((column) => (
+              <div key={column.title} className="footer-column">
+                <h3>{column.title}</h3>
+                <ul>
+                  {column.links.map((link) => (
+                    <li key={link}>
+                      <a href="#hero-section">{link}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            <div className="footer-column footer-signup">
+              <h3>Stay Connected</h3>
+              <p>Join our newsletter for insights, updates and deep dives.</p>
+              <label className="footer-input" htmlFor="footer-email">
+                <input id="footer-email" type="email" placeholder="Your email" />
+                <span aria-hidden="true">&gt;</span>
+              </label>
+            </div>
+          </div>
+          <div className="site-footer-meta">
+            <p>© 2025 Red Pill Software. All rights reserved.</p>
+            <p>Built for the builders who refuse the loop.</p>
+            <p>Access Node: United States</p>
           </div>
         </footer>
       </main>
