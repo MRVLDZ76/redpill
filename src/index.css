@@ -11,7 +11,7 @@
   --green: #4d8b72;
   --card-shadow: 0 10px 28px rgba(8, 14, 10, 0.05);
   --card-shadow-strong: 0 18px 44px rgba(8, 14, 10, 0.11);
-  --shell-width: 1280px;
+  --shell-width: 1440px;
   --shell-gutter: 24px;
   font-family: 'Inter', sans-serif;
   font-synthesis: none;
@@ -95,3 +95,5 @@ button {
     --shell-gutter: 18px;
   }
 }
+
+

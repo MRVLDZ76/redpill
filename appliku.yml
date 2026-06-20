@@ -4,7 +4,7 @@
     - "name": "VITE_CONTACT_API_URL"
       "value": "https://backend.prompt.tax/api/contact/landing/"
     - "name": "VITE_CALENDLY_URL"
-      "value": "#contact"
+      "value": "https://calendly.com/your-team/architecture-discussion"
     - "name": "VITE_LINKEDIN_URL"
       "value": "https://www.linkedin.com/"
     - "name": "VITE_EMAILJS_SERVICE_ID"

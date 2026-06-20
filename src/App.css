@@ -324,7 +324,7 @@
 .hero h1 {
   font-size: clamp(3.4rem, 6.2vw, 6.1rem);
   line-height: 0.92;
-  max-width: 10ch;
+  max-width: 12ch;
 }
 
 .hero-intro,
@@ -570,6 +570,36 @@
   gap: 20px;
 }
 
+.services-lens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.services-lens-button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.services-lens-button.is-active,
+.services-lens-button:hover,
+.services-lens-button:focus-visible {
+  border-color: color-mix(in srgb, var(--red) 30%, var(--line-soft));
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
 .service-card {
   padding: 32px;
   border-radius: 26px;
@@ -594,6 +624,23 @@
   border-radius: 12px;
   color: var(--red);
   background: color-mix(in srgb, var(--red) 8%, var(--surface));
+}
+
+.service-focus-label {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.service-focus-copy {
+  margin: 0;
+  padding-top: 15px;
+  border-top: 1px solid var(--line-soft);
+  color: var(--muted);
+  line-height: 1.72;
 }
 
 .service-card dl {
@@ -631,17 +678,21 @@
 
 .insights-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
 }
 
 .insight-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   min-height: 100%;
-  padding: 24px;
+  padding: 28px;
   border-radius: 22px;
+}
+
+.insight-card p {
+  max-width: 34ch;
 }
 
 .insight-card a {
@@ -1079,177 +1130,101 @@
   max-width: 34ch;
 }
 
-@media (max-width: 1220px) {
-  .hero {
-    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
-  }
+.footer-glow-logo {
+  position: relative;
+  width: 100%;
+  padding: 1.5rem 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
 
-  .section-heading,
-  .contact-panel {
-    grid-template-columns: 1fr;
-  }
+.footer-glow-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+}
 
-  .gap-panel {
-    grid-template-columns: 1fr;
-  }
+.footer-logo-svg {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
 
-  .clients-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+/* Glow circle - follows cursor/scroll */
+.footer-glow-circle {
+  position: absolute;
+  top: 50%;
+  left: var(--footer-glow-x, 50%);
+  transform: translate(-50%, -50%);
+  width: var(--footer-glow-r, 200px);
+  height: var(--footer-glow-r, 200px);
+  background: radial-gradient(
+    circle,
+    rgba(220, 38, 38, 0.12) 0%,
+    rgba(220, 38, 38, 0.04) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(30px);
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
 
-  .gap-visual {
-    min-height: 320px;
-  }
+/* Hover effect */
+.footer-glow-logo:hover .footer-glow-circle {
+  background: radial-gradient(
+    circle,
+    rgba(220, 38, 38, 0.2) 0%,
+    rgba(220, 38, 38, 0.06) 40%,
+    transparent 70%
+  );
+}
 
-  .insights-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-glow-logo {
+    padding: 1rem 0;
+  }
+  
+  .footer-logo-svg {
+    max-height: 100px;
+  }
+  
+  .footer-glow-circle {
+    width: 150px !important;
+    height: 150px !important;
   }
 }
 
-@media (max-width: 980px) {
-  .site-header {
-    flex-wrap: wrap;
-    align-items: flex-start;
+@media (max-width: 480px) {
+  .footer-glow-logo {
+    padding: 0.75rem 0;
   }
-
-  .site-nav-desktop {
-    display: none;
+  
+  .footer-logo-svg {
+    max-height: 70px;
   }
-
-  .header-actions {
-    margin-left: auto;
-    align-items: center;
-  }
-
-  .mobile-menu-button {
-    display: inline-flex;
-  }
-
-  .nav-cta {
-    display: none;
-  }
-
-  .mobile-nav-shell {
-    display: block;
-    margin-top: 8px;
-  }
-
-  .hero,
-  .failure-grid,
-  .approach-grid,
-  .services-grid,
-  .insights-grid,
-  .site-footer {
-    grid-template-columns: 1fr;
-  }
-
-  .site-footer {
-    gap: 20px;
-  }
-
-  .footer-links {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .gap-panel {
-    padding: 30px 26px 28px;
-  }
-
-  .clients-wrap {
-    padding: 20px;
+  
+  .footer-glow-circle {
+    width: 100px !important;
+    height: 100px !important;
   }
 }
 
-@media (max-width: 720px) {
-  .page-shell {
-    padding-bottom: 46px;
-  }
-
-  .site-header {
-    gap: 14px;
-  }
-
-  .hero {
-    gap: 36px;
-    padding-top: 42px;
-  }
-
-  .hero h1 {
-    max-width: none;
-  }
-
-  .header-actions {
-    width: 100%;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .theme-toggle,
-  .locale-dropdown-trigger,
-  .mobile-menu-button {
-    flex: 1;
-    justify-content: center;
-  }
-
-  .failure-card,
-  .approach-card,
-  .service-card,
-  .insight-card,
-  .contact-panel {
-    padding: 22px;
-  }
-
-  .contact-form {
-    grid-template-columns: 1fr;
-  }
-
-  .contact-form-actions {
-    flex-direction: column;
-  }
-
-  .contact-form-actions .primary-cta,
-  .contact-form-actions .secondary-cta {
-    width: 100%;
-  }
-
-  .contact-consent {
-    align-items: flex-start;
-  }
-
-  .gap-panel {
-    padding: 24px 20px 22px;
-  }
-
-  .gap-visual {
-    min-height: 420px;
-  }
-
-  .gap-stage {
-    position: relative;
-    inset: auto;
-    width: 100%;
-    max-width: none;
-    transform: none;
-    margin-top: 12px;
-  }
-
-  .gap-stage-foundation,
-  .gap-stage-experimental,
-  .gap-stage-enterprise {
-    transform: none;
-    left: auto;
-    right: auto;
-    top: auto;
-    bottom: auto;
-  }
-
-  .gap-connector,
-  .gap-visual-grid,
-  .gap-visual-orbit {
-    display: none;
-  }
-
-  .footer-links {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .footer-glow-circle {
+    transition: none !important;
   }
 }

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import './App.css'
 import KnowledgeGraph from './KnowledgeGraph.tsx'
+import FooterGlowLogo from './FooterGlowLogo.tsx'
 import { getAppContent, localeLabels, supportedLocales, type Locale } from './content.ts'
 
 type ThemeMode = 'light' | 'dark'
@@ -26,6 +27,7 @@ type ContactFormState = {
 }
 
 type SubmitState = 'idle' | 'sending' | 'success' | 'error'
+type ServiceLens = 'problem' | 'approach' | 'outcome' | 'impact'
 
 const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL ?? 'https://www.linkedin.com/'
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID ?? ''
@@ -101,6 +103,7 @@ function App() {
   const [contactForm, setContactForm] = useState<ContactFormState>(initialContactForm)
   const [submitState, setSubmitState] = useState<SubmitState>('idle')
   const [submitMessage, setSubmitMessage] = useState('')
+  const [serviceLens, setServiceLens] = useState<ServiceLens>('problem')
   const [formOpenedAt, setFormOpenedAt] = useState(() => Date.now())
   const localeDropdownRef = useRef<HTMLDivElement | null>(null)
   const mobileNavRef = useRef<HTMLDivElement | null>(null)
@@ -274,6 +277,7 @@ function App() {
         <nav className="site-nav site-nav-desktop" aria-label="Primary links">
           <a href="#approach">{copy.nav.approach}</a>
           <a href="#services">{copy.nav.services}</a>
+          <a href="/use-cases">Use Cases</a>
           <a href="#insights">{copy.nav.insights}</a>
           <a href="#contact">{copy.nav.contact}</a>
         </nav>
@@ -344,6 +348,7 @@ function App() {
           <div className="mobile-nav-panel" aria-label="Mobile navigation">
             <a href="#approach" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.approach}</a>
             <a href="#services" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.services}</a>
+            <a href="/use-cases" onClick={() => setIsMobileNavOpen(false)}>Use Cases</a>
             <a href="#insights" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.insights}</a>
             <a href="#contact" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.contact}</a>
           </div>
@@ -498,9 +503,35 @@ function App() {
           <h2 id="services-title">{copy.services.title}</h2>
         </div>
 
+        <div className="services-lens" role="tablist" aria-label="Service detail selector">
+          {(['problem', 'approach', 'outcome', 'impact'] as ServiceLens[]).map((lens) => {
+            const lensLabel = copy.services.labels[lens]
+            const isActive = serviceLens === lens
+
+            return (
+              <button
+                key={lens}
+                type="button"
+                role="tab"
+                className={isActive ? 'services-lens-button is-active' : 'services-lens-button'}
+                aria-selected={isActive}
+                onClick={() => setServiceLens(lens)}
+              >
+                {lensLabel}
+              </button>
+            )
+          })}
+        </div>
+
         <div className="services-grid">
           {copy.services.items.map((service) => {
             const ServiceIcon = service.icon
+            const serviceDetailByLens: Record<ServiceLens, string> = {
+              problem: service.problem,
+              approach: service.approach,
+              outcome: service.outcome,
+              impact: service.impact,
+            }
 
             return (
               <article key={service.title} className="service-card">
@@ -510,24 +541,8 @@ function App() {
 
                 <h3>{service.title}</h3>
 
-                <dl>
-                  <div>
-                    <dt>{copy.services.labels.problem}</dt>
-                    <dd>{service.problem}</dd>
-                  </div>
-                  <div>
-                    <dt>{copy.services.labels.approach}</dt>
-                    <dd>{service.approach}</dd>
-                  </div>
-                  <div>
-                    <dt>{copy.services.labels.outcome}</dt>
-                    <dd>{service.outcome}</dd>
-                  </div>
-                  <div>
-                    <dt>{copy.services.labels.impact}</dt>
-                    <dd>{service.impact}</dd>
-                  </div>
-                </dl>
+                <p className="service-focus-label">{copy.services.labels[serviceLens]}</p>
+                <p className="service-focus-copy">{serviceDetailByLens[serviceLens]}</p>
               </article>
             )
           })}
@@ -690,14 +705,19 @@ function App() {
         <div className="footer-links">
           <a href="#approach">{copy.footer.links[0]}</a>
           <a href="#services">{copy.footer.links[1]}</a>
+          <a href="/use-cases">Use Cases</a>
           <a href="#insights">{copy.footer.links[2]}</a>
           <a href="#contact">{copy.footer.links[3]}</a>
           <a {...getLinkProps(LINKEDIN_URL)}>{copy.footer.links[4]}</a>
         </div>
 
-        <p className="footer-thesis">
-          Red Pill Software helps organizations structure knowledge before AI systems are asked to reason over it.
-        </p>
+        <div>
+        
+          <p className="footer-thesis">
+            Red Pill Software helps organizations structure knowledge before AI systems are asked to reason over it.
+          </p>
+        </div>
+          
       </footer>
     </main>
   )
