@@ -3,6 +3,18 @@
   "environment_variables":
     - "name": "VITE_CONTACT_API_URL"
       "value": "https://backend.prompt.tax/api/contact/landing/"
+    - "name": "VITE_CALENDLY_URL"
+      "value": "#contact"
+    - "name": "VITE_LINKEDIN_URL"
+      "value": "https://www.linkedin.com/"
+    - "name": "VITE_EMAILJS_SERVICE_ID"
+      "value": ""
+    - "name": "VITE_EMAILJS_TEMPLATE_ID"
+      "value": ""
+    - "name": "VITE_EMAILJS_PUBLIC_KEY"
+      "value": ""
+    - "name": "VITE_CONTACT_RECEIVER_EMAIL"
+      "value": "noahedison7@gmail.com"
   "build_command": "yarn build"
   "container_port": 3000
 "services":

@@ -1,606 +1,665 @@
 import { useEffect, useRef, useState } from 'react'
-import type { ChangeEvent, FormEvent } from 'react'
-import KnowledgeGraph from './KnowledgeGraph'
+import type { FormEvent } from 'react'
+import emailjs from '@emailjs/browser'
+import {
+  X,
+  Menu,
+  Moon,
+  Sun,
+  TriangleAlert,
+  ChevronDown,
+} from 'lucide-react'
+import './App.css'
+import KnowledgeGraph from './KnowledgeGraph.tsx'
+import { getAppContent, localeLabels, supportedLocales, type Locale } from './content.ts'
 
-type ContactPayload = {
+type ThemeMode = 'light' | 'dark'
+
+type ContactFormState = {
+  name: string
   company: string
   email: string
-  message: string
-  name: string
-  phone: string
   subject: string
+  message: string
+  website: string
+  consent: boolean
 }
 
-const initialForm: ContactPayload = {
+type SubmitState = 'idle' | 'sending' | 'success' | 'error'
+
+const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL ?? 'https://www.linkedin.com/'
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID ?? ''
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID ?? ''
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY ?? ''
+const DESTINATION_EMAIL = import.meta.env.VITE_CONTACT_RECEIVER_EMAIL ?? 'noahedison7@gmail.com'
+const CONTACT_COOLDOWN_MS = 60_000
+const CONTACT_MIN_SUBMIT_DELAY_MS = 3_000
+const CONTACT_LAST_SENT_KEY = 'contact-last-sent-at'
+
+const initialContactForm: ContactFormState = {
+  name: '',
   company: '',
   email: '',
-  message: '',
-  name: '',
-  phone: '',
   subject: '',
+  message: '',
+  website: '',
+  consent: false,
 }
 
-const API_URL = import.meta.env.VITE_CONTACT_API_URL ?? 'https://backend.prompt.tax/api/contact/landing/'
+function getLinkProps(url: string) {
+  const isExternal = /^(https?:)?\/\//.test(url)
 
-function App() {
-  const [preloaderHidden, setPreloaderHidden] = useState(false)
-  const [showT1, setShowT1] = useState(false)
-  const [showT2, setShowT2] = useState(false)
-  const [showT3, setShowT3] = useState(false)
-  const [showT3Confirm, setShowT3Confirm] = useState(false)
-  const [animateDrop, setAnimateDrop] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [cursorX, setCursorX] = useState<number>(0)
-  const [cursorY, setCursorY] = useState<number>(0)
-  const [formData, setFormData] = useState<ContactPayload>(initialForm)
-  const [consent, setConsent] = useState(false)
-  const [submitState, setSubmitState] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [toastMessage, setToastMessage] = useState('')
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
-
-  const navLinks = ['Products', 'Solutions', 'About', 'Resources']
-
-  const metrics = [
-    { value: '6', label: 'Connected Nodes' },
-    { value: '12', label: 'Active Agents' },
-    { value: '128K+', label: 'Knowledge Entities' },
-    { value: '99.9%', label: 'System Uptime' },
-  ]
-
-  const footerColumns = [
-    {
-      title: 'Products',
-      links: ['PromptTax', 'Ontologent', 'Studio', 'OnlyPPL', 'Recurring22AI Node', 'Series Academy'],
-    },
-    {
-      title: 'Solutions',
-      links: ['AI Automation', 'Knowledge Graphs', 'Agentic Workflows', 'Data Intelligence', 'Workflow Optimization', 'Enterprise AI'],
-    },
-    {
-      title: 'Resources',
-      links: ['Docs', 'Case Studies', 'Blog', 'Developer Portal', 'Status'],
-    },
-    {
-      title: 'Company',
-      links: ['About Us', 'Careers', 'Contact', 'Privacy Policy', 'Terms of Service'],
-    },
-  ]
-
-  useEffect(() => {
-    const timers = [
-      window.setTimeout(() => setAnimateDrop(true), 1000),
-      window.setTimeout(() => setShowT1(true), 2000),
-      window.setTimeout(() => setShowT2(true), 3000),
-      window.setTimeout(() => setShowT3(true), 4000),
-      window.setTimeout(() => setShowT3Confirm(true), 4500),
-      window.setTimeout(() => setPreloaderHidden(true), 5500),
-    ]
-
-    return () => {
-      timers.forEach((timer) => window.clearTimeout(timer))
-    }
-  }, [])
-
-  useEffect(() => {
-    const onMouseMove = (event: MouseEvent) => {
-      setCursorX(event.clientX)
-      setCursorY(event.clientY)
-    }
-
-    window.addEventListener('mousemove', onMouseMove)
-    return () => {
-      window.removeEventListener('mousemove', onMouseMove)
-    }
-  }, [])
-
-  useEffect(() => {
-    const onEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setModalOpen(false)
-      }
-    }
-
-    window.addEventListener('keydown', onEsc)
-    return () => {
-      window.removeEventListener('keydown', onEsc)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!toastMessage) {
-      return
-    }
-
-    const timer = window.setTimeout(() => {
-      setToastMessage('')
-    }, 3500)
-
-    return () => {
-      window.clearTimeout(timer)
-    }
-  }, [toastMessage])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) {
-      return
-    }
-
-    const context = canvas.getContext('2d')
-    if (!context) {
-      return
-    }
-
-    let animationId = 0
-    const letters = '01ABCDEF<>*#'
-    const fontSize = 16
-    let drops: number[] = []
-
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      const columns = Math.floor(canvas.width / fontSize)
-      drops = Array.from({ length: columns }, () => 1)
-    }
-
-    const draw = () => {
-      context.fillStyle = 'rgba(0, 0, 0, 0.08)'
-      context.fillRect(0, 0, canvas.width, canvas.height)
-
-      context.fillStyle = 'rgba(22, 255, 156, 0.25)'
-      context.font = `${fontSize}px monospace`
-
-      for (let index = 0; index < drops.length; index += 1) {
-        const char = letters[Math.floor(Math.random() * letters.length)]
-        context.fillText(char, index * fontSize, drops[index] * fontSize)
-
-        if (drops[index] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[index] = 0
-        }
-        drops[index] += 1
-      }
-
-      animationId = window.requestAnimationFrame(draw)
-    }
-
-    resize()
-    draw()
-    window.addEventListener('resize', resize)
-
-    return () => {
-      window.cancelAnimationFrame(animationId)
-      window.removeEventListener('resize', resize)
-    }
-  }, [])
-
-  const handleModalOpen = () => {
-    setModalOpen(true)
-    setErrorMessage('')
-    if (submitState !== 'sending') {
-      setSubmitState('idle')
-    }
+  if (!isExternal) {
+    return { href: url }
   }
 
-  const handleModalClose = () => {
+  return {
+    href: url,
+    target: '_blank',
+    rel: 'noreferrer',
+  }
+}
+
+function resolveInitialTheme(): ThemeMode {
+  const stored = window.localStorage.getItem('theme-mode')
+  if (stored === 'light' || stored === 'dark') {
+    return stored
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function App() {
+  const [locale, setLocale] = useState<Locale>('en')
+  const [isLocaleMenuOpen, setIsLocaleMenuOpen] = useState(false)
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+  const [statementIndex, setStatementIndex] = useState(0)
+  const [statementVisible, setStatementVisible] = useState(true)
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => resolveInitialTheme())
+  const [contactForm, setContactForm] = useState<ContactFormState>(initialContactForm)
+  const [submitState, setSubmitState] = useState<SubmitState>('idle')
+  const [submitMessage, setSubmitMessage] = useState('')
+  const [formOpenedAt, setFormOpenedAt] = useState(() => Date.now())
+  const localeDropdownRef = useRef<HTMLDivElement | null>(null)
+  const mobileNavRef = useRef<HTMLDivElement | null>(null)
+  const copy = getAppContent(locale)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = themeMode
+    window.localStorage.setItem('theme-mode', themeMode)
+  }, [themeMode])
+
+  useEffect(() => {
+    setStatementIndex(0)
+    setStatementVisible(true)
+  }, [locale])
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node
+
+      if (localeDropdownRef.current && !localeDropdownRef.current.contains(target)) {
+        setIsLocaleMenuOpen(false)
+      }
+
+      if (mobileNavRef.current && !mobileNavRef.current.contains(target)) {
+        setIsMobileNavOpen(false)
+      }
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsLocaleMenuOpen(false)
+      }
+    }
+
+    window.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('keydown', handleEscape)
+
+    return () => {
+      window.removeEventListener('pointerdown', handlePointerDown)
+      window.removeEventListener('keydown', handleEscape)
+    }
+  }, [])
+
+  useEffect(() => {
+    setIsMobileNavOpen(false)
+  }, [locale])
+
+  useEffect(() => {
+    document.documentElement.lang = locale
+    document.title = copy.meta.title
+
+    const updateMeta = (selector: string, value: string) => {
+      const element = document.querySelector<HTMLMetaElement>(selector)
+      if (element) {
+        element.setAttribute('content', value)
+      }
+    }
+
+    updateMeta('meta[name="description"]', copy.meta.description)
+    updateMeta('meta[property="og:title"]', copy.meta.title)
+    updateMeta('meta[property="og:description"]', copy.meta.description)
+    updateMeta('meta[name="twitter:title"]', copy.meta.title)
+    updateMeta('meta[name="twitter:description"]', copy.meta.description)
+  }, [copy.meta.description, copy.meta.title, locale])
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setStatementVisible(false)
+
+      window.setTimeout(() => {
+        setStatementIndex((currentIndex) => (currentIndex + 1) % copy.hero.rotatingStatements.length)
+        setStatementVisible(true)
+      }, 280)
+    }, 6000)
+
+    return () => {
+      window.clearInterval(intervalId)
+    }
+  }, [copy.hero.rotatingStatements])
+
+  const currentStatement = copy.hero.rotatingStatements[statementIndex]
+  const isDarkMode = themeMode === 'dark'
+
+  const handleContactChange = (field: keyof ContactFormState, value: string) => {
+    setContactForm((current) => ({
+      ...current,
+      [field]: value,
+    }))
+  }
+
+  const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
     if (submitState === 'sending') {
       return
     }
 
-    setModalOpen(false)
-    setSubmitState('idle')
-    setErrorMessage('')
-  }
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = event.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!consent || submitState === 'sending') {
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      setSubmitState('error')
+      setSubmitMessage(copy.contact.messages.configMissing)
       return
     }
 
-    const normalizedSubject = formData.subject.trim()
-    const normalizedPhone = formData.phone.trim()
-    const normalizedEmail = formData.email.trim()
-
-    if (normalizedSubject.length < 4) {
-      setSubmitState('error')
-      setErrorMessage('Subject must be at least 4 characters.')
+    if (contactForm.website.trim().length > 0) {
+      setSubmitState('success')
+      setSubmitMessage(copy.contact.messages.spam)
       return
     }
 
-    if (!/^\S+@\S+\.\S+$/.test(normalizedEmail)) {
+    if (!contactForm.consent) {
       setSubmitState('error')
-      setErrorMessage('Please provide a valid email address.')
+      setSubmitMessage(copy.contact.messages.spam)
       return
     }
 
-    if (!/^\+?[0-9()\-\s]{7,20}$/.test(normalizedPhone)) {
+    if (Date.now() - formOpenedAt < CONTACT_MIN_SUBMIT_DELAY_MS) {
       setSubmitState('error')
-      setErrorMessage('Please provide a valid phone number.')
+      setSubmitMessage(copy.contact.messages.fastSubmit)
+      return
+    }
+
+    const previousSentAt = Number(window.localStorage.getItem(CONTACT_LAST_SENT_KEY) ?? '0')
+    if (Date.now() - previousSentAt < CONTACT_COOLDOWN_MS) {
+      setSubmitState('error')
+      setSubmitMessage(copy.contact.messages.cooldown)
       return
     }
 
     setSubmitState('sending')
-    setErrorMessage('')
+    setSubmitMessage('')
 
     try {
-      const payload = new FormData()
-      payload.append('company', formData.company)
-      payload.append('email', formData.email)
-      payload.append('message', formData.message)
-      payload.append('name', formData.name)
-      payload.append('phone', formData.phone)
-      payload.append('subject', formData.subject)
-
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: payload,
-        headers: {
-          Accept: 'application/json',
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          to_email: DESTINATION_EMAIL,
+          from_name: contactForm.name,
+          company: contactForm.company,
+          reply_to: contactForm.email,
+          subject: contactForm.subject,
+          message: contactForm.message,
         },
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to transmit signal. Please try again.')
-      }
+        {
+          publicKey: EMAILJS_PUBLIC_KEY,
+        }
+      )
 
       setSubmitState('success')
-      window.setTimeout(() => {
-        setModalOpen(false)
-        setSubmitState('idle')
-        setConsent(false)
-        setFormData(initialForm)
-        setToastMessage('Signal delivered. Operator will respond soon.')
-      }, 1500)
+      setSubmitMessage(copy.contact.messages.success)
+      window.localStorage.setItem(CONTACT_LAST_SENT_KEY, String(Date.now()))
+      setContactForm(initialContactForm)
+      setFormOpenedAt(Date.now())
     } catch {
       setSubmitState('error')
-      setErrorMessage('Transmission failed. Verify fields and retry.')
+      setSubmitMessage(copy.contact.messages.error)
     }
   }
 
   return (
-    <>
-      <canvas ref={canvasRef} id="matrix" aria-hidden="true" />
+    <main className="page-shell">
+      <header className="site-header section-shell" aria-label="Primary navigation">
+        <a className="brand" href="#top" aria-label="Red Pill Software home">
+          <span className="brand-mark" aria-hidden="true" />
+          <span className="brand-copy">
+            <strong>Red Pill Software</strong>
+            <span>{copy.footer.tagline}</span>
+          </span>
+        </a>
 
-      <div
-        className="cursor-glow"
-        style={{
-          left: cursorX,
-          top: cursorY,
-        }}
-        aria-hidden="true"
-      />
+        <nav className="site-nav site-nav-desktop" aria-label="Primary links">
+          <a href="#approach">{copy.nav.approach}</a>
+          <a href="#services">{copy.nav.services}</a>
+          <a href="#insights">{copy.nav.insights}</a>
+          <a href="#contact">{copy.nav.contact}</a>
+        </nav>
 
-      <div
-        id="preloader"
-        className={preloaderHidden ? 'preloader-hidden' : ''}
-        aria-hidden={preloaderHidden}
-      >
-        <div id="sapphire-pill" className={`sapphire-pill ${animateDrop ? 'animate-drop' : ''}`} />
-        <div className="terminal-boot font-mono">
-          {showT1 && (
-            <p className={`term-line ${!showT2 ? 'typing-cursor' : ''}`}>{'> INITIALIZING SECURE CONNECTION...'}</p>
-          )}
-          {showT2 && (
-            <p className={`term-line ${!showT3 ? 'typing-cursor' : ''}`}>{'> BYPASSING MAINFRAME...'}</p>
-          )}
-          {showT3 && (
-            <p className="term-line">
-              <span>{'> TRACING SIGNAL... '}</span>
-              {showT3Confirm && <span className="term-red typing-cursor">PATH CONFIRMED: RED PILL.</span>}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <main className={`page ${preloaderHidden ? 'page-ready' : ''}`}>
-        <header className="site-header section-shell" aria-label="Primary navigation">
-          <a className="brand" href="#hero-section" aria-label="Red Pill Software home">
-            <span className="brand-mark" aria-hidden="true" />
-            <span className="brand-copy">
-              <strong>Red Pill</strong>
-              <span>Software</span>
-            </span>
-          </a>
-          <nav className="site-nav">
-            {navLinks.map((link) => (
-              <a key={link} href="#hero-section">
-                {link}
-              </a>
-            ))}
-          </nav>
-          <button type="button" className="nav-cta" onClick={handleModalOpen}>
-            Take The Red Pill
-          </button>
-        </header>
-
-        <section className="hero section-shell" id="hero-section">
-          <div className="hero-noise" aria-hidden="true" />
-          <div className="hero-radial" aria-hidden="true" />
-          <div className="hero-copy">
-            <div className="pill-mark" aria-hidden="true">
-              <span className="pill-half pill-half-solid" />
-              <span className="pill-half pill-half-glass" />
-            </div>
-            <h1>
-              Escape the
-              <span className="red">Software Matrix.</span>
-            </h1>
-            <p>AI systems and automation tools designed to wake your business up.</p>
-            <button type="button" className="primary-cta" onClick={handleModalOpen}>
-              <span>Take The Red Pill</span>
+        <div className="header-actions">
+          <div className="locale-dropdown" ref={localeDropdownRef}>
+            <button
+              type="button"
+              className={isLocaleMenuOpen ? 'locale-dropdown-trigger is-open' : 'locale-dropdown-trigger'}
+              onClick={() => setIsLocaleMenuOpen((current) => !current)}
+              aria-haspopup="menu"
+              aria-expanded={isLocaleMenuOpen}
+              aria-label="Select site language"
+            >
+              <span>{localeLabels[locale]}</span>
+              <ChevronDown size={14} aria-hidden="true" />
             </button>
-          </div>
-        </section>
 
-        <section className="graph-section section-shell" aria-labelledby="graph-title">
-          <div className="graph-frame">
-            <div className="graph-frame-head">
-              <div>
-                <p className="graph-eyebrow">System Network</p>
-                <h2 id="graph-title">Live Knowledge Graph</h2>
+            {isLocaleMenuOpen && (
+              <div className="locale-dropdown-menu" role="menu" aria-label="Language options">
+                {supportedLocales.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={locale === option ? 'locale-dropdown-item is-active' : 'locale-dropdown-item'}
+                    onClick={() => {
+                      setLocale(option)
+                      setIsLocaleMenuOpen(false)
+                    }}
+                    role="menuitemradio"
+                    aria-checked={locale === option}
+                  >
+                    <strong>{localeLabels[option]}</strong>
+                    <span>{option === 'en' ? 'English' : option === 'fr' ? 'Français' : 'Español'}</span>
+                  </button>
+                ))}
               </div>
-              <div className="graph-legend" aria-label="Graph legend">
-                <span><i className="legend-dot legend-system" />System</span>
-                <span><i className="legend-dot legend-agent" />Agent</span>
-                <span><i className="legend-dot legend-resource" />Resource</span>
-                <span><i className="legend-dot legend-connection" />Connection</span>
-              </div>
-            </div>
-
-            <KnowledgeGraph onContactClick={handleModalOpen} />
-
-            <div className="graph-metrics" aria-label="System metrics">
-              {metrics.map((metric) => (
-                <article key={metric.label} className="metric-card">
-                  <strong>{metric.value}</strong>
-                  <span>{metric.label}</span>
-                </article>
-              ))}
-            </div>
+            )}
           </div>
-        </section>
 
-        <section className="protocol section-shell" aria-labelledby="protocol-title">
-          <header className="protocol-head">
-            <span className="protocol-tag">{'// OPERATOR PROTOCOL'}</span>
-            <h2 id="protocol-title">
-              Three steps to <span className="red">unplug</span>.
-            </h2>
-            <p>
-              Every engagement follows the same path: find the loop draining your team, replace it with an agent, then
-              hand back the time it stole.
-            </p>
-          </header>
-          <ol className="protocol-steps">
-            <li className="protocol-step">
-              <span className="protocol-step-num">01</span>
-              <h3>Identify the glitch</h3>
-              <p>
-                We map the workflow, the tools and the humans inside it. Bottlenecks, manual handoffs and silent rework
-                get tagged.
-              </p>
-            </li>
-            <li className="protocol-step">
-              <span className="protocol-step-num">02</span>
-              <h3>Inject the agent</h3>
-              <p>
-                We build, deploy and integrate the AI system — tax engine, knowledge graph, retrieval pipeline or
-                bespoke agent — directly into your stack.
-              </p>
-            </li>
-            <li className="protocol-step">
-              <span className="protocol-step-num">03</span>
-              <h3>Reclaim the loop</h3>
-              <p>
-                Your team stops shipping the same task twice. Outputs are governed, auditable, and tenant-isolated by
-                default.
-              </p>
-            </li>
-          </ol>
-        </section>
-
-        <section className="final-cta section-shell" aria-labelledby="final-cta-title">
-          <h2 id="final-cta-title">This is your last chance.</h2>
-          <p>
-            You take the blue pill and the story ends.<br />
-            You take the red pill and see how deep the rabbit hole goes.
-          </p>
-          <button type="button" className="primary-cta" onClick={handleModalOpen}>
-            <span>Take The Red Pill</span>
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={() => setThemeMode((mode) => (mode === 'light' ? 'dark' : 'light'))}
+            aria-label={copy.theme.aria}
+          >
+            {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+            <span>{isDarkMode ? copy.theme.light : copy.theme.dark}</span>
           </button>
-        </section>
 
-        <footer className="site-footer section-shell" aria-label="Company footer">
-          <div className="site-footer-grid">
-            <div className="footer-brand-block">
-              <a className="brand footer-brand" href="#hero-section" aria-label="Red Pill Software home">
-                <span className="brand-mark" aria-hidden="true" />
-                <span className="brand-copy">
-                  <strong>Red Pill</strong>
-                  <span>Software</span>
-                </span>
-              </a>
-              <p>AI systems and automation tools that wake your business up.</p>
-              <div className="footer-socials" aria-label="Social links">
-                <span>X</span>
-                <span>in</span>
-                <span>yt</span>
-                <span>gh</span>
-              </div>
-            </div>
+          <a className="nav-cta" href="#contact">{copy.nav.sendMessage}</a>
 
-            {footerColumns.map((column) => (
-              <div key={column.title} className="footer-column">
-                <h3>{column.title}</h3>
-                <ul>
-                  {column.links.map((link) => (
-                    <li key={link}>
-                      <a href="#hero-section">{link}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <button
+            type="button"
+            className="mobile-menu-button"
+            onClick={() => setIsMobileNavOpen((current) => !current)}
+            aria-expanded={isMobileNavOpen}
+            aria-controls="mobile-navigation"
+            aria-label={isMobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          >
+            {isMobileNavOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+          </button>
+        </div>
+      </header>
+
+      {isMobileNavOpen && (
+        <div className="mobile-nav-shell section-shell" ref={mobileNavRef} id="mobile-navigation">
+          <div className="mobile-nav-panel" aria-label="Mobile navigation">
+            <a href="#approach" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.approach}</a>
+            <a href="#services" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.services}</a>
+            <a href="#insights" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.insights}</a>
+            <a href="#contact" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.contact}</a>
+          </div>
+        </div>
+      )}
+
+      <section className="hero section-shell" id="top">
+        <div className="hero-pattern" aria-hidden="true" />
+
+        <div className="hero-copy">
+          <span className="eyebrow">{copy.hero.eyebrow}</span>
+          <h1>{copy.hero.title}</h1>
+          <p className="hero-intro">{copy.hero.intro}</p>
+          <p className="hero-detail">{copy.hero.detail}</p>
+
+          <div className="hero-actions">
+            <a className="primary-cta" href="#contact">
+              {copy.hero.primary}
+            </a>
+            <a className="secondary-cta" href="#approach">
+              {copy.hero.secondary}
+            </a>
+          </div>
+
+          <div className="rotating-message" aria-live="polite">
+            <span className="rotating-label">{copy.hero.rotatingLabel}</span>
+            <p className={`rotating-copy ${statementVisible ? 'is-visible' : ''}`}>{currentStatement}</p>
+          </div>
+        </div>
+
+        <div className="hero-visual">
+          <KnowledgeGraph locale={locale} />
+        </div>
+      </section>
+
+      <section className="failure-section section-shell" aria-labelledby="failure-title">
+        <div className="section-heading section-heading-single">
+          <span className="eyebrow">{copy.failure.eyebrow}</span>
+          <h2 id="failure-title">{copy.failure.title}</h2>
+        </div>
+
+        <div className="failure-grid">
+          {copy.failure.items.map((item) => (
+            <article key={item.title} className="failure-card">
+              <TriangleAlert size={18} strokeWidth={1.9} aria-hidden="true" />
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </article>
+          ))}
+        </div>
+
+        <p className="failure-summary">{copy.failure.summary}</p>
+      </section>
+
+      <section className="approach-section section-shell" id="approach" aria-labelledby="approach-title">
+        <div className="section-heading section-heading-single">
+          <span className="eyebrow">{copy.approach.eyebrow}</span>
+          <h2 id="approach-title">{copy.approach.title}</h2>
+        </div>
+
+        <div className="approach-grid">
+          {copy.approach.steps.map((step, index) => (
+            <article key={step.title} className="approach-card">
+              <span className="approach-step">0{index + 1}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="gap-section section-shell" aria-labelledby="gap-title">
+        <div className="gap-panel">
+          <div className="gap-copy">
+            <span className="eyebrow">{copy.gap.eyebrow}</span>
+            <h2 id="gap-title">{copy.gap.title}</h2>
+            {copy.gap.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
             ))}
 
-            <div className="footer-column footer-signup">
-              <h3>Stay Connected</h3>
-              <p>Join our newsletter for insights, updates and deep dives.</p>
-              <label className="footer-input" htmlFor="footer-email">
-                <input id="footer-email" type="email" placeholder="Your email" />
-                <span aria-hidden="true">&gt;</span>
-              </label>
+            <a className="gap-cta" href="#contact">
+              {copy.gap.cta} <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <aside className="gap-visual" aria-hidden="true">
+            <div className="gap-visual-orbit" />
+            <div className="gap-visual-grid" />
+            <div className="gap-stage gap-stage-experimental">
+              <div className="gap-stage-topline">
+                <span>{copy.gap.nodes.experimental}</span>
+                <strong>{locale === 'fr' ? 'Modèles expérimentaux' : locale === 'es' ? 'Modelos experimentales' : 'Experimental models'}</strong>
+              </div>
+              <p>{locale === 'fr' ? 'Sorties imprévisibles, contexte pauvre, confiance faible.' : locale === 'es' ? 'Resultados impredecibles, contexto débil, poca confianza.' : 'Unstable outputs, thin context, low trust.'}</p>
+              <div className="gap-stage-meter">
+                <i />
+              </div>
             </div>
-          </div>
-          <div className="site-footer-meta">
-            <p>© 2025 Red Pill Software. All rights reserved.</p>
-            <p>Built for the builders who refuse the loop.</p>
-            <p>Access Node: United States</p>
-          </div>
-        </footer>
-      </main>
 
-      <div
-        id="modal"
-        className={`modal-wrapper ${modalOpen ? 'modal-open' : ''}`}
-        onClick={(event) => {
-          if (event.target === event.currentTarget) {
-            handleModalClose()
-          }
-        }}
-      >
-        <div className="terminal-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title">
-          <div className="terminal-modal-bg" aria-hidden="true" />
-          <button type="button" className="close-hitbox" onClick={handleModalClose} aria-label="Close dialog" />
-          <header className="terminal-modal-header" aria-hidden="true">
-            <span className="terminal-modal-status">
-              <span className="terminal-modal-dot" /> SECURE LINE ESTABLISHED
-            </span>
-            <span className="terminal-modal-meta">NODE / NEBUCHADNEZZAR · CHANNEL 01</span>
-          </header>
-          <form id="secure-form" onSubmit={handleSubmit}>
-            <h3 id="contact-title" className="terminal-modal-title">Contact Transmission</h3>
-            <p className="terminal-modal-subtitle">
-              Drop your signal. We respond inside 24 hours, usually faster.
-            </p>
+            <div className="gap-stage gap-stage-foundation">
+              <div className="gap-stage-topline">
+                <span>{copy.gap.nodes.foundation}</span>
+                <strong>{locale === 'fr' ? 'Fondation sémantique' : locale === 'es' ? 'Base semántica' : 'Semantic foundation'}</strong>
+              </div>
+              <p>{locale === 'fr' ? 'Ontologies, graphes et gouvernance relient le sens du métier.' : locale === 'es' ? 'Ontologías, grafos y gobernanza conectan el significado del negocio.' : 'Ontologies, graphs, and governance connect business meaning.'}</p>
+              <div className="gap-stage-bridge">
+                <span className="bridge-segment bridge-segment-one" />
+                <span className="bridge-segment bridge-segment-two" />
+                <span className="bridge-segment bridge-segment-three" />
+              </div>
+            </div>
 
-            <div className="form-grid">
-              <label className="field">
-                <span className="field-label">{'> ALIAS'}</span>
+            <div className="gap-stage gap-stage-enterprise">
+              <div className="gap-stage-topline">
+                <span>{copy.gap.nodes.enterprise}</span>
+                <strong>{locale === 'fr' ? 'Résultat entreprise' : locale === 'es' ? 'Resultado empresarial' : 'Enterprise outcome'}</strong>
+              </div>
+              <p>{locale === 'fr' ? 'Réponses fiables, traçables et utilisables à grande échelle.' : locale === 'es' ? 'Respuestas fiables, trazables y utilizables a escala.' : 'Reliable, traceable, scalable answers.'}</p>
+              <div className="gap-stage-pillrow">
+                <span>{locale === 'fr' ? 'Confiance' : locale === 'es' ? 'Confianza' : 'Trust'}</span>
+                <span>{locale === 'fr' ? 'Traçabilité' : locale === 'es' ? 'Trazabilidad' : 'Traceability'}</span>
+                <span>{locale === 'fr' ? 'Échelle' : locale === 'es' ? 'Escala' : 'Scale'}</span>
+              </div>
+            </div>
+
+            <div className="gap-connector" />
+          </aside>
+        </div>
+      </section>
+
+      <section className="services-section section-shell" id="services" aria-labelledby="services-title">
+        <div className="section-heading section-heading-single">
+          <span className="eyebrow">{copy.services.eyebrow}</span>
+          <h2 id="services-title">{copy.services.title}</h2>
+        </div>
+
+        <div className="services-grid">
+          {copy.services.items.map((service) => {
+            const ServiceIcon = service.icon
+
+            return (
+              <article key={service.title} className="service-card">
+                <div className="service-icon-wrap" aria-hidden="true">
+                  <ServiceIcon size={19} strokeWidth={1.9} />
+                </div>
+
+                <h3>{service.title}</h3>
+
+                <dl>
+                  <div>
+                    <dt>{copy.services.labels.problem}</dt>
+                    <dd>{service.problem}</dd>
+                  </div>
+                  <div>
+                    <dt>{copy.services.labels.approach}</dt>
+                    <dd>{service.approach}</dd>
+                  </div>
+                  <div>
+                    <dt>{copy.services.labels.outcome}</dt>
+                    <dd>{service.outcome}</dd>
+                  </div>
+                  <div>
+                    <dt>{copy.services.labels.impact}</dt>
+                    <dd>{service.impact}</dd>
+                  </div>
+                </dl>
+              </article>
+            )
+          })}
+        </div>
+      </section>
+
+      <section className="red-pill-section section-shell" aria-labelledby="red-pill-title">
+        <span className="eyebrow">{copy.redPill.eyebrow}</span>
+        <h2 id="red-pill-title">{copy.redPill.title}</h2>
+        {copy.redPill.paragraphs.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+      </section>
+
+      <section className="insights-section section-shell" id="insights" aria-labelledby="insights-title">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">{copy.insights.eyebrow}</span>
+            <h2 id="insights-title">{copy.insights.title}</h2>
+          </div>
+          <p>{copy.insights.intro}</p>
+        </div>
+
+        <div className="insights-grid">
+          {copy.insights.items.map((insight, index) => (
+            <article key={insight.title} className="insight-card">
+              <span className="insight-index">0{index + 1}</span>
+              <h3>{insight.title}</h3>
+              <p>{insight.text}</p>
+              <a href="#contact">{copy.insights.cta}</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="contact-section section-shell" id="contact" aria-labelledby="contact-title">
+        <div className="contact-panel">
+          <div className="contact-copy">
+            <span className="eyebrow">{copy.contact.eyebrow}</span>
+            <h2 id="contact-title">{copy.contact.title}</h2>
+            <p>{copy.contact.intro}</p>
+          </div>
+
+          <div className="contact-actions">
+            <form className="contact-form" onSubmit={handleContactSubmit}>
+              <label>
+                <span>{copy.contact.fields.name}</span>
                 <input
                   type="text"
-                  id="alias"
                   name="name"
-                  className="seamless-input"
-                  placeholder="Your name"
-                  value={formData.name}
-                  onChange={handleInputChange}
+                  value={contactForm.name}
+                  onChange={(event) => handleContactChange('name', event.target.value)}
                   required
                 />
               </label>
 
-              <label className="field">
-                <span className="field-label">{'> COMM CHANNEL'}</span>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="seamless-input"
-                  placeholder="you@domain.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </label>
-
-              <label className="field">
-                <span className="field-label">{'> COMPANY'}</span>
+              <label>
+                <span>{copy.contact.fields.company}</span>
                 <input
                   type="text"
                   name="company"
-                  className="seamless-input"
-                  placeholder="Organization"
-                  value={formData.company}
-                  onChange={handleInputChange}
+                  value={contactForm.company}
+                  onChange={(event) => handleContactChange('company', event.target.value)}
                   required
                 />
               </label>
 
-              <label className="field">
-                <span className="field-label">{'> PHONE'}</span>
+              <label>
+                <span>{copy.contact.fields.email}</span>
                 <input
-                  type="tel"
-                  name="phone"
-                  className="seamless-input"
-                  placeholder="+1 ..."
-                  value={formData.phone}
-                  onChange={handleInputChange}
+                  type="email"
+                  name="email"
+                  value={contactForm.email}
+                  onChange={(event) => handleContactChange('email', event.target.value)}
                   required
                 />
               </label>
 
-              <label className="field field-full">
-                <span className="field-label">{'> SUBJECT'}</span>
+              <label>
+                <span>{copy.contact.fields.subject}</span>
                 <input
                   type="text"
                   name="subject"
-                  className="seamless-input"
-                  placeholder="What is this about?"
-                  value={formData.subject}
-                  onChange={handleInputChange}
+                  value={contactForm.subject}
+                  onChange={(event) => handleContactChange('subject', event.target.value)}
                   required
                 />
               </label>
 
-              <label className="field field-full">
-                <span className="field-label">{'> THE GLITCH (your message)'}</span>
+              <label className="contact-form-full">
+                <span>{copy.contact.fields.message}</span>
                 <textarea
-                  id="message"
                   name="message"
-                  className="seamless-input"
-                  placeholder="Describe what should be automated, what is broken, or who you need to reach..."
-                  value={formData.message}
-                  onChange={handleInputChange}
+                  rows={5}
+                  value={contactForm.message}
+                  onChange={(event) => handleContactChange('message', event.target.value)}
                   required
                 />
               </label>
-            </div>
 
-            <div className="consent-wrapper">
-              <input
-                type="checkbox"
-                id="consent"
-                checked={consent}
-                onChange={(event) => setConsent(event.target.checked)}
-                required
-              />
-              <label htmlFor="consent">I verify my choice and reject automated spam protocols.</label>
-            </div>
+              <label className="contact-consent contact-form-full">
+                <input
+                  type="checkbox"
+                  name="consent"
+                  checked={contactForm.consent}
+                  onChange={(event) => setContactForm((current) => ({ ...current, consent: event.target.checked }))}
+                  required
+                />
+                <span>{copy.contact.fields.consent}</span>
+              </label>
 
-            <button type="submit" className="terminal-submit" disabled={submitState === 'sending'}>
-              {submitState === 'sending' && 'TRANSMITTING...'}
-              {submitState === 'success' && 'SIGNAL SENT'}
-              {submitState === 'error' && 'RETRY TRANSMISSION'}
-              {submitState === 'idle' && 'TRANSMIT DATA'}
-            </button>
+              <label className="contact-honeypot" aria-hidden="true" tabIndex={-1}>
+                <span>Website</span>
+                <input
+                  type="text"
+                  name="website"
+                  autoComplete="off"
+                  value={contactForm.website}
+                  onChange={(event) => handleContactChange('website', event.target.value)}
+                  tabIndex={-1}
+                />
+              </label>
 
-            {errorMessage && <p className="submit-status">{errorMessage}</p>}
-          </form>
+              <div className="contact-form-actions contact-form-full">
+                <button type="submit" className="primary-cta" disabled={submitState === 'sending'}>
+                  {submitState === 'sending' ? copy.contact.messages.sending : copy.contact.submit}
+                </button>
+                <a className="secondary-cta" {...getLinkProps(LINKEDIN_URL)}>
+                  {copy.contact.linkedin}
+                </a>
+              </div>
+
+              {submitMessage && (
+                <p className={`contact-feedback contact-feedback-${submitState}`} role="status" aria-live="polite">
+                  {submitMessage}
+                </p>
+              )}
+            </form>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className={`success-toast ${toastMessage ? 'success-toast-visible' : ''}`} role="status" aria-live="polite">
-        {toastMessage}
-      </div>
-    </>
+      <footer className="site-footer section-shell" aria-label="Footer">
+        <div className="footer-brand">
+          <a className="brand" href="#top" aria-label="Red Pill Software home">
+            <span className="brand-mark" aria-hidden="true" />
+            <span className="brand-copy">
+              <strong>Red Pill Software</strong>
+              <span>Enterprise Intelligence Architecture</span>
+            </span>
+          </a>
+          <p>{copy.footer.tagline}</p>
+          <address className="footer-address">
+            {copy.footer.address.map((line) => (
+              <span key={line}>{line}</span>
+            ))}
+          </address>
+        </div>
+
+        <div className="footer-links">
+          <a href="#approach">{copy.footer.links[0]}</a>
+          <a href="#services">{copy.footer.links[1]}</a>
+          <a href="#insights">{copy.footer.links[2]}</a>
+          <a href="#contact">{copy.footer.links[3]}</a>
+          <a {...getLinkProps(LINKEDIN_URL)}>{copy.footer.links[4]}</a>
+        </div>
+
+        <p className="footer-thesis">
+          Red Pill Software helps organizations structure knowledge before AI systems are asked to reason over it.
+        </p>
+      </footer>
+    </main>
   )
 }
 

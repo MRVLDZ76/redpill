@@ -1,506 +1,560 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Database, FileText, Layers3, Mail, Network, Server, Settings2, Workflow } from 'lucide-react'
 import './KnowledgeGraph.css'
+import { getKnowledgeGraphContent, type Locale } from './content'
 
-export type GraphNode = {
+type ItemKind = 'input' | 'layer' | 'output' | 'capability'
+
+type DiagramItem = {
   id: string
   title: string
-  subtitle: string
+  kind: ItemKind
+  detail: string
+  purpose?: string
+  value?: string
+  outcome?: string
+  icon?: typeof Database
+}
+
+type Relationship = {
+  inputIds: string[]
+  layerIds: string[]
+  outputIds: string[]
+  capabilityIds: string[]
+}
+
+type Position = {
+  left: number
+  right: number
+  centerY: number
+}
+
+type TooltipState = {
+  layer: DiagramItem
   x: number
   y: number
-  href?: string
-  accent: 'green' | 'red'
-  icon: 'pill' | 'glasses' | 'rabbit' | 'code' | 'key' | 'database'
+} | null
+
+const inputs: DiagramItem[] = [
+  { id: 'databases', title: 'Databases', kind: 'input', icon: Database, detail: 'Structured records, operational systems, and enterprise data stores.' },
+  { id: 'documents', title: 'Documents', kind: 'input', icon: FileText, detail: 'Policies, contracts, specifications, and unstructured operational knowledge.' },
+  { id: 'emails', title: 'Emails', kind: 'input', icon: Mail, detail: 'Institutional memory and decision context captured in communication trails.' },
+  { id: 'apis', title: 'APIs', kind: 'input', icon: Workflow, detail: 'Cross-system interfaces exposing entities, events, and process state.' },
+  { id: 'crm', title: 'CRM', kind: 'input', icon: Network, detail: 'Customer and account context that must align with enterprise ontology.' },
+  { id: 'erp', title: 'ERP', kind: 'input', icon: Server, detail: 'Core operational and financial systems with high-value business semantics.' },
+  { id: 'applications', title: 'Applications', kind: 'input', icon: Settings2, detail: 'Line-of-business platforms with fragmented but critical operational context.' },
+  { id: 'data-lakes', title: 'Data Lakes', kind: 'input', icon: Layers3, detail: 'Large repositories requiring semantic curation before enterprise AI usage.' },
+]
+
+const layersById: Record<string, DiagramItem> = {
+  governance: {
+    id: 'governance',
+    title: 'Governance',
+    kind: 'layer',
+    detail: 'Ownership, policy, and stewardship controls for trusted enterprise knowledge.',
+    purpose: 'Establish accountability and control over enterprise knowledge assets.',
+    value: 'Increases trust, compliance confidence, and adoption readiness.',
+    outcome: 'AI systems operate within defined operational and regulatory constraints.',
+  },
+  'data-engineering': {
+    id: 'data-engineering',
+    title: 'Data Engineering',
+    kind: 'layer',
+    detail: 'Ingestion, normalization, lineage, and integration of fragmented source systems.',
+    purpose: 'Transform fragmented source data into reliable, usable flows.',
+    value: 'Improves interoperability and reduces downstream integration failure.',
+    outcome: 'Stable enterprise information flows that support scalable AI operations.',
+  },
+  'semantic-models': {
+    id: 'semantic-models',
+    title: 'Semantic Models',
+    kind: 'layer',
+    detail: 'Shared conceptual structures that map business meaning to technical systems.',
+    purpose: 'Translate technical records into consistent business concepts.',
+    value: 'Aligns teams, systems, and analysis around shared meaning.',
+    outcome: 'Less ambiguity and stronger reasoning quality across AI applications.',
+  },
+  'knowledge-graphs': {
+    id: 'knowledge-graphs',
+    title: 'Knowledge Graphs',
+    kind: 'layer',
+    detail: 'Connected entity and relationship architecture with provenance and context.',
+    purpose: 'Connect entities, events, and dependencies in a queryable graph fabric.',
+    value: 'Enhances retrieval, traceability, and explainability.',
+    outcome: 'Context-aware AI outputs grounded in enterprise relationships.',
+  },
+  ontologies: {
+    id: 'ontologies',
+    title: 'Ontologies',
+    kind: 'layer',
+    detail: 'Formal domain models that define enterprise language and conceptual logic.',
+    purpose: 'Define durable enterprise meaning and conceptual consistency.',
+    value: 'Reduces terminology drift across systems and teams.',
+    outcome: 'Reliable semantic alignment for enterprise transformation.',
+  },
+  'knowledge-accretion-engine': {
+    id: 'knowledge-accretion-engine',
+    title: 'Knowledge Accretion Engine',
+    kind: 'layer',
+    detail: 'Continuous enrichment loops that compound enterprise intelligence over time.',
+    purpose: 'Capture feedback and evolve the architecture continuously.',
+    value: 'Turns static architecture into a compounding capability.',
+    outcome: 'Systems improve with usage instead of degrading with complexity.',
+  },
+}
+
+const layerStackOrder = [
+  layersById['knowledge-accretion-engine'],
+  layersById.ontologies,
+  layersById['knowledge-graphs'],
+  layersById['semantic-models'],
+  layersById['data-engineering'],
+  layersById.governance,
+]
+
+const outputs: DiagramItem[] = [
+  { id: 'ai-assistants', title: 'AI Assistants', kind: 'output', detail: 'Assistants grounded in enterprise context and governance.' },
+  { id: 'enterprise-search', title: 'Enterprise Search', kind: 'output', detail: 'Semantic retrieval that understands entities and relationships.' },
+  { id: 'agentic-systems', title: 'Agentic Systems', kind: 'output', detail: 'Agents orchestrated with enterprise context and operational controls.' },
+  { id: 'decision-support', title: 'Decision Support', kind: 'output', detail: 'Reasoning paths connecting facts, policy, and business outcomes.' },
+  { id: 'analytics', title: 'Analytics', kind: 'output', detail: 'Business analysis aligned to shared semantic definitions.' },
+  { id: 'workflow-automation', title: 'Workflow Automation', kind: 'output', detail: 'Automation informed by entity state, policy, and enterprise rules.' },
+  { id: 'knowledge-discovery', title: 'Knowledge Discovery', kind: 'output', detail: 'Insight surfacing across connected enterprise context.' },
+]
+
+const capabilities: DiagramItem[] = [
+  { id: 'entity-resolution', title: 'Entity Resolution', kind: 'capability', detail: 'Resolve duplicate and fragmented identities across systems.' },
+  { id: 'grounded-retrieval', title: 'Grounded Retrieval', kind: 'capability', detail: 'Return context with provenance and semantic precision.' },
+  { id: 'taxonomy-design', title: 'Taxonomy Design', kind: 'capability', detail: 'Organize domain terms and hierarchies for enterprise reuse.' },
+]
+
+const inputRelationships: Record<string, Relationship> = {
+  databases: {
+    inputIds: ['databases'],
+    layerIds: ['data-engineering', 'semantic-models', 'knowledge-graphs'],
+    outputIds: ['analytics', 'decision-support'],
+    capabilityIds: ['grounded-retrieval'],
+  },
+  documents: {
+    inputIds: ['documents'],
+    layerIds: ['semantic-models', 'knowledge-graphs'],
+    outputIds: ['enterprise-search', 'ai-assistants'],
+    capabilityIds: ['grounded-retrieval', 'taxonomy-design'],
+  },
+  emails: {
+    inputIds: ['emails'],
+    layerIds: ['knowledge-graphs', 'knowledge-accretion-engine'],
+    outputIds: ['ai-assistants', 'knowledge-discovery'],
+    capabilityIds: ['grounded-retrieval'],
+  },
+  apis: {
+    inputIds: ['apis'],
+    layerIds: ['data-engineering', 'governance'],
+    outputIds: ['agentic-systems', 'workflow-automation'],
+    capabilityIds: ['entity-resolution'],
+  },
+  crm: {
+    inputIds: ['crm'],
+    layerIds: ['ontologies', 'knowledge-accretion-engine'],
+    outputIds: ['agentic-systems', 'workflow-automation'],
+    capabilityIds: ['entity-resolution'],
+  },
+  erp: {
+    inputIds: ['erp'],
+    layerIds: ['governance', 'data-engineering', 'semantic-models'],
+    outputIds: ['decision-support', 'workflow-automation'],
+    capabilityIds: ['entity-resolution'],
+  },
+  applications: {
+    inputIds: ['applications'],
+    layerIds: ['semantic-models', 'knowledge-accretion-engine'],
+    outputIds: ['agentic-systems', 'ai-assistants'],
+    capabilityIds: ['grounded-retrieval'],
+  },
+  'data-lakes': {
+    inputIds: ['data-lakes'],
+    layerIds: ['data-engineering', 'knowledge-graphs'],
+    outputIds: ['analytics', 'knowledge-discovery'],
+    capabilityIds: ['taxonomy-design'],
+  },
+}
+
+function mergeRelationship(parts: Partial<Relationship>[]): Relationship {
+  return {
+    inputIds: [...new Set(parts.flatMap((part) => part.inputIds ?? []))],
+    layerIds: [...new Set(parts.flatMap((part) => part.layerIds ?? []))],
+    outputIds: [...new Set(parts.flatMap((part) => part.outputIds ?? []))],
+    capabilityIds: [...new Set(parts.flatMap((part) => part.capabilityIds ?? []))],
+  }
 }
 
 type KnowledgeGraphProps = {
-  onContactClick: () => void
+  locale: Locale
 }
 
-type DragState = {
-  nodeId: string | null
-  startX: number
-  startY: number
-  nodeStartX: number
-  nodeStartY: number
-  moved: boolean
-}
+function KnowledgeGraph({ locale }: KnowledgeGraphProps) {
+  const content = getKnowledgeGraphContent(locale)
+  const localizedInputs = content.inputs
+  const localizedLayers = content.layers
+  const localizedOutputs = content.outputs
+  const localizedCapabilities = content.capabilities
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const [positions, setPositions] = useState<Record<string, Position>>({})
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [scrollStage, setScrollStage] = useState(0)
+  const [tooltip, setTooltip] = useState<TooltipState>(null)
 
-const MatrixIcon = ({ type, accent }: { type: GraphNode['icon']; accent: GraphNode['accent'] }) => {
-  const color = accent === 'red' ? '#ff5959' : '#1cffae'
-  const secondaryColor = accent === 'red' ? '#ffd1d1' : '#aaffdf'
+  const layerRelationships = useMemo(() => {
+    const entries = layerStackOrder.map((layer) => {
+      const matches = Object.values(inputRelationships).filter((relationship) => relationship.layerIds.includes(layer.id))
+      return [layer.id, mergeRelationship(matches)]
+    })
 
-  switch (type) {
-    case 'pill':
-      return (
-        <g className="matrix-icon">
-          <ellipse cx="0" cy="-8" rx="18" ry="10" fill={color} opacity="0.9" />
-          <ellipse cx="0" cy="8" rx="18" ry="10" fill="#dc2626" opacity="0.9" />
-          <ellipse cx="0" cy="-8" rx="15" ry="7" fill={secondaryColor} opacity="0.3" />
-          <rect x="-18" y="-8" width="36" height="16" fill={color} opacity="0.85" />
-          <line x1="-18" y1="0" x2="18" y2="0" stroke="#000" strokeWidth="1.5" opacity="0.3" />
-        </g>
-      )
-    case 'glasses':
-      return (
-        <g className="matrix-icon">
-          <ellipse cx="-10" cy="0" rx="9" ry="7" fill="none" stroke={color} strokeWidth="2.5" />
-          <ellipse cx="10" cy="0" rx="9" ry="7" fill="none" stroke={color} strokeWidth="2.5" />
-          <line x1="-1" y1="0" x2="1" y2="0" stroke={color} strokeWidth="2.5" />
-          <path d="M -19 0 L -22 -3" stroke={color} strokeWidth="2" fill="none" strokeLinecap="round" />
-          <path d="M 19 0 L 22 -3" stroke={color} strokeWidth="2" fill="none" strokeLinecap="round" />
-          <ellipse cx="-10" cy="0" rx="4" ry="3" fill={secondaryColor} opacity="0.3" />
-          <ellipse cx="10" cy="0" rx="4" ry="3" fill={secondaryColor} opacity="0.3" />
-        </g>
-      )
-    case 'rabbit':
-      return (
-        <g className="matrix-icon">
-          <ellipse cx="0" cy="3" rx="12" ry="10" fill={color} opacity="0.9" />
-          <circle cx="0" cy="-5" r="8" fill={color} opacity="0.9" />
-          <ellipse cx="-8" cy="-15" rx="3" ry="11" fill={color} opacity="0.85" transform="rotate(-15 -8 -15)" />
-          <ellipse cx="8" cy="-15" rx="3" ry="11" fill={color} opacity="0.85" transform="rotate(15 8 -15)" />
-          <circle cx="-3" cy="-6" r="2" fill="#000" />
-          <circle cx="3" cy="-6" r="2" fill="#000" />
-          <circle cx="0" cy="-2" r="1.5" fill={secondaryColor} />
-          <ellipse cx="0" cy="10" rx="5" ry="4" fill={secondaryColor} opacity="0.4" />
-        </g>
-      )
-    case 'code':
-      return (
-        <g className="matrix-icon">
-          <path d="M -12 0 L -18 -6 L -12 -12" stroke={color} strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M 12 0 L 18 -6 L 12 -12" stroke={color} strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          <line x1="-2" y1="-14" x2="2" y2="2" stroke={color} strokeWidth="3" strokeLinecap="round" />
-          <circle cx="-12" cy="-18" r="2" fill={secondaryColor} opacity="0.6" />
-          <circle cx="0" cy="-18" r="2" fill={secondaryColor} opacity="0.6" />
-          <circle cx="12" cy="-18" r="2" fill={secondaryColor} opacity="0.6" />
-          <circle cx="-12" cy="6" r="2" fill={secondaryColor} opacity="0.6" />
-          <circle cx="12" cy="6" r="2" fill={secondaryColor} opacity="0.6" />
-        </g>
-      )
-    case 'key':
-      return (
-        <g className="matrix-icon">
-          <circle cx="-4" cy="-7" r="8" fill="none" stroke={color} strokeWidth="3" />
-          <line x1="2" y1="-1" x2="14" y2="11" stroke={color} strokeWidth="3" strokeLinecap="round" />
-          <line x1="8" y1="5" x2="12" y2="1" stroke={color} strokeWidth="3" strokeLinecap="round" />
-          <line x1="11" y1="8" x2="15" y2="4" stroke={color} strokeWidth="3" strokeLinecap="round" />
-          <circle cx="-4" cy="-7" r="3" fill={secondaryColor} opacity="0.4" />
-        </g>
-      )
-    case 'database':
-      return (
-        <g className="matrix-icon">
-          <ellipse cx="0" cy="-10" rx="12" ry="5" fill={color} opacity="0.9" />
-          <rect x="-12" y="-10" width="24" height="20" fill={color} opacity="0.75" />
-          <ellipse cx="0" cy="10" rx="12" ry="5" fill={color} opacity="0.9" />
-          <ellipse cx="0" cy="-10" rx="7" ry="2.5" fill={secondaryColor} opacity="0.25" />
-          <ellipse cx="0" cy="10" rx="7" ry="2.5" fill={secondaryColor} opacity="0.2" />
-        </g>
-      )
-    default:
-      return null
-  }
-}
-
-const initialGraphNodes: GraphNode[] = [
-  {
-    id: 'prompttax',
-    title: 'PromptTax',
-    subtitle: 'AI Orchestration',
-    href: 'https://prompt.tax',
-    x: 50,
-    y: 18,
-    accent: 'red',
-    icon: 'pill',
-  },
-  {
-    id: 'onlyppl',
-    title: 'OnlyPPL',
-    subtitle: 'Human-in-the-Loop',
-    href: 'https://mageek.dev',
-    x: 16,
-    y: 43,
-    accent: 'green',
-    icon: 'glasses',
-  },
-  {
-    id: 'series-academy',
-    title: 'Series Academy',
-    subtitle: 'Learning Engine',
-    href: 'https://semweb.academy',
-    x: 84,
-    y: 43,
-    accent: 'green',
-    icon: 'code',
-  },
-  {
-    id: 'recurring-node',
-    title: 'Recurring22AI Node',
-    subtitle: 'Data & Memory Layer',
-    x: 20,
-    y: 75,
-    accent: 'green',
-    icon: 'database',
-  },
-  {
-    id: 'ontologent',
-    title: 'Ontologent',
-    subtitle: 'Knowledge Graph Engine',
-    x: 50,
-    y: 82,
-    accent: 'red',
-    icon: 'key',
-  },
-  {
-    id: 'studio',
-    title: 'Studio',
-    subtitle: 'Creative Engine',
-    href: 'https://studio.mageek.dev',
-    x: 80,
-    y: 75,
-    accent: 'green',
-    icon: 'rabbit',
-  },
-]
-
-const coreConnections = [
-  'prompttax',
-  'onlyppl',
-  'series-academy',
-  'recurring-node',
-  'ontologent',
-  'studio',
-]
-
-const orbitConnections: Array<[string, string]> = [
-  ['prompttax', 'onlyppl'],
-  ['prompttax', 'series-academy'],
-  ['onlyppl', 'recurring-node'],
-  ['recurring-node', 'ontologent'],
-  ['ontologent', 'studio'],
-  ['studio', 'series-academy'],
-]
-
-function KnowledgeGraph({ onContactClick }: KnowledgeGraphProps) {
-  const svgRef = useRef<SVGSVGElement>(null)
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null)
-  const [nodes, setNodes] = useState<GraphNode[]>(initialGraphNodes)
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
-  const [dragState, setDragState] = useState<DragState>({
-    nodeId: null,
-    startX: 0,
-    startY: 0,
-    nodeStartX: 0,
-    nodeStartY: 0,
-    moved: false,
-  })
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (svgRef.current) {
-        const container = svgRef.current.parentElement
-        if (container) {
-          const width = container.clientWidth
-          setDimensions({
-            width,
-            height: Math.max(520, Math.min(660, width * 0.72)),
-          })
-        }
-      }
-    }
-
-    updateDimensions()
-    window.addEventListener('resize', updateDimensions)
-    return () => window.removeEventListener('resize', updateDimensions)
+    return Object.fromEntries(entries) as Record<string, Relationship>
   }, [])
 
-  const isConnected = (nodeId: string) => {
-    if (!hoveredNode) return false
-    return hoveredNode === nodeId || orbitConnections.some(([from, to]) => {
-      if (hoveredNode === from) return to === nodeId
-      if (hoveredNode === to) return from === nodeId
-      return false
+  const outputRelationships = useMemo(() => {
+    const entries = outputs.map((output) => {
+      const matches = Object.values(inputRelationships).filter((relationship) => relationship.outputIds.includes(output.id))
+      return [output.id, mergeRelationship(matches)]
     })
-  }
 
-  const getNodePosition = (node: GraphNode) => ({
-    x: (node.x / 100) * dimensions.width,
-    y: (node.y / 100) * dimensions.height,
-  })
+    return Object.fromEntries(entries) as Record<string, Relationship>
+  }, [])
 
-  const handleNodeMouseDown = (event: React.MouseEvent, nodeId: string) => {
-    event.stopPropagation()
-    const node = nodes.find((entry) => entry.id === nodeId)
-    if (!node) {
-      return
-    }
-
-    setDragState({
-      nodeId,
-      startX: event.clientX,
-      startY: event.clientY,
-      nodeStartX: node.x,
-      nodeStartY: node.y,
-      moved: false,
+  const capabilityRelationships = useMemo(() => {
+    const entries = capabilities.map((capability) => {
+      const matches = Object.values(inputRelationships).filter((relationship) => relationship.capabilityIds.includes(capability.id))
+      return [capability.id, mergeRelationship(matches)]
     })
-  }
 
-  useEffect(() => {
-    if (!dragState.nodeId || !dimensions.width || !dimensions.height) {
-      return
-    }
+    return Object.fromEntries(entries) as Record<string, Relationship>
+  }, [])
 
-    const onMouseMove = (event: MouseEvent) => {
-      const deltaX = event.clientX - dragState.startX
-      const deltaY = event.clientY - dragState.startY
-      const moved = Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4
+  const relationshipMap = useMemo(
+    () => ({ ...inputRelationships, ...layerRelationships, ...outputRelationships, ...capabilityRelationships }),
+    [capabilityRelationships, layerRelationships, outputRelationships]
+  )
 
-      const nextX = dragState.nodeStartX + (deltaX / dimensions.width) * 100
-      const nextY = dragState.nodeStartY + (deltaY / dimensions.height) * 100
-
-      const clampedX = Math.max(10, Math.min(90, nextX))
-      const clampedY = Math.max(10, Math.min(90, nextY))
-
-      setNodes((prevNodes) =>
-        prevNodes.map((node) =>
-          node.id === dragState.nodeId
-            ? {
-                ...node,
-                x: clampedX,
-                y: clampedY,
-              }
-            : node
-        )
-      )
-
-      if (moved && !dragState.moved) {
-        setDragState((prev) => ({ ...prev, moved: true }))
+  const stageRelationship: Relationship = useMemo(() => {
+    if (scrollStage === 0) {
+      return {
+        inputIds: inputs.map((item) => item.id),
+        layerIds: [],
+        outputIds: [],
+        capabilityIds: [],
       }
     }
 
-    const onMouseUp = () => {
-      setDragState({
-        nodeId: null,
-        startX: 0,
-        startY: 0,
-        nodeStartX: 0,
-        nodeStartY: 0,
-        moved: false,
-      })
+    if (scrollStage === 1) {
+      return {
+        inputIds: inputs.map((item) => item.id),
+        layerIds: layerStackOrder.map((item) => item.id),
+        outputIds: [],
+        capabilityIds: capabilities.map((item) => item.id),
+      }
     }
 
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', onMouseUp)
+    return {
+      inputIds: inputs.map((item) => item.id),
+      layerIds: layerStackOrder.map((item) => item.id),
+      outputIds: outputs.map((item) => item.id),
+      capabilityIds: capabilities.map((item) => item.id),
+    }
+  }, [scrollStage])
+
+  const activeRelationship = hoveredId ? relationshipMap[hoveredId] : stageRelationship
+
+  const activeItem = hoveredId
+    ? [...inputs, ...layerStackOrder, ...outputs, ...capabilities].find((item) => item.id === hoveredId) ?? layerStackOrder[2]
+    : scrollStage === 0
+      ? inputs[0]
+      : scrollStage === 1
+        ? layerStackOrder[2]
+        : outputs[0]
+
+  useEffect(() => {
+    const measure = () => {
+      if (!wrapperRef.current) {
+        return
+      }
+
+      const containerRect = wrapperRef.current.getBoundingClientRect()
+      const nextPositions = Object.fromEntries(
+        Object.entries(itemRefs.current)
+          .filter(([, element]) => Boolean(element))
+          .map(([id, element]) => {
+            const rect = element!.getBoundingClientRect()
+            return [
+              id,
+              {
+                left: rect.left - containerRect.left,
+                right: rect.right - containerRect.left,
+                centerY: rect.top - containerRect.top + rect.height / 2,
+              },
+            ]
+          })
+      )
+
+      setPositions(nextPositions)
+    }
+
+    const resizeObserver = new ResizeObserver(measure)
+    const frameId = window.requestAnimationFrame(measure)
+
+    if (wrapperRef.current) {
+      resizeObserver.observe(wrapperRef.current)
+    }
+
+    window.addEventListener('resize', measure)
 
     return () => {
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
+      window.cancelAnimationFrame(frameId)
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', measure)
     }
-  }, [dragState, dimensions])
+  }, [])
 
-  const handleNodeClick = (node: GraphNode) => {
-    if (dragState.moved) {
-      return
+  useEffect(() => {
+    const onScroll = () => {
+      if (!wrapperRef.current) {
+        return
+      }
+
+      const rect = wrapperRef.current.getBoundingClientRect()
+      const viewportHeight = window.innerHeight
+      const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height)
+
+      if (progress < 0.4) {
+        setScrollStage(0)
+      } else if (progress < 0.7) {
+        setScrollStage(1)
+      } else {
+        setScrollStage(2)
+      }
     }
 
-    if (node.href) {
-      window.open(node.href, '_blank', 'noreferrer')
-      return
-    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
 
-    onContactClick()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
+  const connectorPaths = useMemo(() => {
+    const layerLines = inputs.flatMap((input) => {
+      const from = positions[input.id]
+      if (!from) {
+        return []
+      }
+
+      return (inputRelationships[input.id]?.layerIds ?? []).flatMap((layerId) => {
+        const to = positions[layerId]
+        if (!to) {
+          return []
+        }
+
+        const active = activeRelationship.inputIds.includes(input.id) && activeRelationship.layerIds.includes(layerId)
+
+        return [
+          {
+            key: `${input.id}-${layerId}`,
+            d: `M ${from.right} ${from.centerY} C ${from.right + 24} ${from.centerY}, ${to.left - 30} ${to.centerY}, ${to.left} ${to.centerY}`,
+            active,
+          },
+        ]
+      })
+    })
+
+    const outputLines = layerStackOrder.flatMap((layer) => {
+      const from = positions[layer.id]
+      if (!from) {
+        return []
+      }
+
+      const relatedOutputs = outputs
+        .filter((output) => (outputRelationships[output.id]?.layerIds ?? []).includes(layer.id))
+        .map((output) => output.id)
+
+      return relatedOutputs.flatMap((outputId) => {
+        const to = positions[outputId]
+        if (!to) {
+          return []
+        }
+
+        const active = activeRelationship.layerIds.includes(layer.id) && activeRelationship.outputIds.includes(outputId)
+
+        return [
+          {
+            key: `${layer.id}-${outputId}`,
+            d: `M ${from.right} ${from.centerY} C ${from.right + 24} ${from.centerY}, ${to.left - 30} ${to.centerY}, ${to.left} ${to.centerY}`,
+            active,
+          },
+        ]
+      })
+    })
+
+    return [...layerLines, ...outputLines]
+  }, [activeRelationship, outputRelationships, positions])
+
+  const isActive = (kind: keyof Relationship, id: string) => activeRelationship[kind].includes(id)
+
+  const getLocalizedDisplay = (item: DiagramItem) => {
+    switch (item.kind) {
+      case 'input': {
+        const index = inputs.findIndex((entry) => entry.id === item.id)
+        return localizedInputs[index] ?? { title: item.title, detail: item.detail }
+      }
+      case 'layer': {
+        const index = layerStackOrder.findIndex((entry) => entry.id === item.id)
+        return localizedLayers[index] ?? { title: item.title, detail: item.detail, purpose: item.purpose ?? '', value: item.value ?? '', outcome: item.outcome ?? '' }
+      }
+      case 'output': {
+        const index = outputs.findIndex((entry) => entry.id === item.id)
+        return localizedOutputs[index] ?? { title: item.title, detail: item.detail }
+      }
+      case 'capability': {
+        const index = capabilities.findIndex((entry) => entry.id === item.id)
+        return localizedCapabilities[index] ?? { title: item.title, detail: item.detail }
+      }
+      default:
+        return { title: item.title, detail: item.detail }
+    }
   }
 
-  const center = {
-    x: dimensions.width / 2,
-    y: dimensions.height / 2,
-  }
+  const handleLayerEnter = (layer: DiagramItem, element: HTMLButtonElement) => {
+    setHoveredId(layer.id)
 
-  const outerRingRadius = Math.min(dimensions.width, dimensions.height) * 0.29
-  const innerRingRadius = Math.min(dimensions.width, dimensions.height) * 0.18
+    const rect = element.getBoundingClientRect()
+    const width = 340
+    const desiredX = rect.right + 14
+    const clampedX = Math.max(16, Math.min(desiredX, window.innerWidth - width - 16))
+    const clampedY = Math.max(24, Math.min(rect.top + rect.height * 0.5 - 110, window.innerHeight - 240))
+
+    setTooltip({ layer, x: clampedX, y: clampedY })
+  }
 
   return (
-    <div className="knowledge-graph-container">
-      <svg ref={svgRef} className="knowledge-graph-svg" width={dimensions.width} height={dimensions.height}>
-        <defs>
-          <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(22, 255, 156, 0.1)" />
-            <stop offset="50%" stopColor="rgba(22, 255, 156, 0.4)" />
-            <stop offset="100%" stopColor="rgba(22, 255, 156, 0.1)" />
-          </linearGradient>
-          
-          <linearGradient id="connection-gradient-active" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(239, 68, 68, 0.3)" />
-            <stop offset="50%" stopColor="rgba(22, 255, 156, 0.8)" />
-            <stop offset="100%" stopColor="rgba(239, 68, 68, 0.3)" />
-          </linearGradient>
+    <div className={`knowledge-architecture stage-${scrollStage}`} ref={wrapperRef}>
+      <div className="knowledge-frame">
+        <div className="knowledge-zones" aria-hidden="true">
+          <span>{content.zones[0]}</span>
+          <span>{content.zones[1]}</span>
+          <span>{content.zones[2]}</span>
+        </div>
 
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
+        <svg className="knowledge-connections" viewBox={`0 0 ${Math.max(1, wrapperRef.current?.clientWidth ?? 1)} ${Math.max(1, wrapperRef.current?.clientHeight ?? 1)}`} preserveAspectRatio="none" aria-hidden="true">
+          {connectorPaths.map((path) => (
+            <path key={path.key} d={path.d} className={path.active ? 'connector-path connector-path-active' : 'connector-path'} />
+          ))}
+        </svg>
 
-          <filter id="glow-strong">
-            <feGaussianBlur stdDeviation="5" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <g className="graph-rings" aria-hidden="true">
-          <circle cx={center.x} cy={center.y} r={outerRingRadius} className="ring ring-outer" />
-          <circle cx={center.x} cy={center.y} r={innerRingRadius} className="ring ring-inner" />
-          <circle cx={center.x} cy={center.y} r={outerRingRadius * 1.22} className="ring ring-faint" />
-        </g>
-
-        <g className="graph-grid" aria-hidden="true">
-          <line x1={center.x} y1={center.y - outerRingRadius * 1.1} x2={center.x} y2={center.y + outerRingRadius * 1.1} />
-          <line x1={center.x - outerRingRadius * 0.95} y1={center.y} x2={center.x + outerRingRadius * 0.95} y2={center.y} />
-        </g>
-
-        <g className="connections-layer">
-          {coreConnections.map((targetId) => {
-            const target = nodes.find((node) => node.id === targetId)
-            if (!target) {
-              return null
-            }
-
-            const to = getNodePosition(target)
-            const isActive = hoveredNode === targetId
-
-            return (
-              <g key={`core-${targetId}`} className={`connection ${isActive ? 'connection-active' : ''}`}>
-                <line
-                  x1={center.x}
-                  y1={center.y}
-                  x2={to.x}
-                  y2={to.y}
-                  stroke={isActive ? 'url(#connection-gradient-active)' : 'url(#connection-gradient)'}
-                  strokeWidth={isActive ? 2.8 : 1.6}
-                  strokeDasharray={isActive ? '0' : '8 5'}
-                  filter={isActive ? 'url(#glow-strong)' : 'url(#glow)'}
-                  className="connection-line"
-                />
-              </g>
-            )
-          })}
-
-          {orbitConnections.map(([fromId, toId]) => {
-            const from = nodes.find((node) => node.id === fromId)
-            const to = nodes.find((node) => node.id === toId)
-            if (!from || !to) {
-              return null
-            }
-
-            const fromPos = getNodePosition(from)
-            const toPos = getNodePosition(to)
-            const isActive = hoveredNode === fromId || hoveredNode === toId
-
-            return (
-              <g key={`${fromId}-${toId}`} className={`connection connection-orbit ${isActive ? 'connection-active' : ''}`}>
-                <line
-                  x1={fromPos.x}
-                  y1={fromPos.y}
-                  x2={toPos.x}
-                  y2={toPos.y}
-                  stroke={isActive ? 'url(#connection-gradient-active)' : 'rgba(255, 89, 89, 0.18)'}
-                  strokeWidth={isActive ? 2 : 1.2}
-                  strokeDasharray="3 7"
-                  className="connection-line"
-                />
-              </g>
-            )
-          })}
-        </g>
-
-        <g className="core-layer" onClick={onContactClick} role="button" tabIndex={0}>
-          <circle cx={center.x} cy={center.y} r="70" className="core-node-glow" />
-          <polygon
-            points={`${center.x},${center.y - 62} ${center.x + 56},${center.y - 30} ${center.x + 56},${center.y + 30} ${center.x},${center.y + 62} ${center.x - 56},${center.y + 30} ${center.x - 56},${center.y - 30}`}
-            className="core-node-shell"
-          />
-          <polygon
-            points={`${center.x},${center.y - 46} ${center.x + 40},${center.y - 22} ${center.x + 40},${center.y + 22} ${center.x},${center.y + 46} ${center.x - 40},${center.y + 22} ${center.x - 40},${center.y - 22}`}
-            className="core-node-inner"
-          />
-          <text x={center.x} y={center.y - 6} textAnchor="middle" className="core-node-icon">
-            {'</>'}
-          </text>
-          <text x={center.x} y={center.y + 18} textAnchor="middle" className="core-node-label">
-            Red Pill
-          </text>
-          <text x={center.x} y={center.y + 36} textAnchor="middle" className="core-node-label core-node-label-sub">
-            Core
-          </text>
-        </g>
-
-        <g className="nodes-layer">
-          {nodes.map((node) => {
-            const pos = getNodePosition(node)
-            const isHighlighted = isConnected(node.id)
-            const isDragging = dragState.nodeId === node.id
-
-            return (
-              <g
-                key={node.id}
-                transform={`translate(${pos.x}, ${pos.y})`}
-                className={`graph-node graph-node-${node.accent} ${isHighlighted ? 'graph-node-highlighted' : ''} ${isDragging ? 'graph-node-dragging' : ''}`}
-                onMouseEnter={() => !isDragging && setHoveredNode(node.id)}
-                onMouseLeave={() => setHoveredNode(null)}
-                onMouseDown={(event) => handleNodeMouseDown(event, node.id)}
-                onClick={() => handleNodeClick(node)}
-                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        <div className="knowledge-grid" onMouseLeave={() => { setHoveredId(null); setTooltip(null) }}>
+          <div className="knowledge-column knowledge-column-inputs">
+            {inputs.map((input, index) => (
+              <button
+                key={input.id}
+                type="button"
+                ref={(element) => {
+                  itemRefs.current[input.id] = element
+                }}
+                className={isActive('inputIds', input.id) ? 'knowledge-card is-active' : 'knowledge-card'}
+                onMouseEnter={() => setHoveredId(input.id)}
+                onBlur={() => setHoveredId(null)}
+                onFocus={() => setHoveredId(input.id)}
               >
-                <circle r={isHighlighted ? 53 : 48} className="node-glow-ring" />
-                <circle
-                  r={36}
-                  fill={node.accent === 'red' ? 'rgba(24, 7, 7, 0.96)' : 'rgba(2, 18, 12, 0.96)'}
-                  stroke={node.accent === 'red' ? '#ff5959' : '#1cffae'}
-                  strokeWidth={isHighlighted ? 2.8 : 2.2}
-                  filter={isHighlighted ? 'url(#glow-strong)' : 'url(#glow)'}
-                  className="node-circle"
-                />
-                <MatrixIcon type={node.icon} accent={node.accent} />
-                <circle
-                  r={5}
-                  cx={28}
-                  cy={-28}
-                  fill={node.accent === 'red' ? '#ff5959' : '#1cffae'}
-                  filter="url(#glow-strong)"
-                  className="node-status-dot"
-                />
-                <text
-                  textAnchor="middle"
-                  className="node-label"
-                  fill={node.accent === 'red' ? '#ffd1d1' : '#e4fff4'}
-                  fontSize="11.5"
-                  fontWeight="700"
-                  dy={58}
-                  style={{ pointerEvents: 'none', userSelect: 'none' }}
+                {input.icon ? <input.icon size={16} strokeWidth={1.9} aria-hidden="true" /> : null}
+                <span>{localizedInputs[index]?.title ?? input.title}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="knowledge-column knowledge-column-center">
+            <div className="knowledge-layer-stack">
+              <div className="knowledge-layer-header">
+                <h2>{content.header.title}</h2>
+                <p>{content.header.description}</p>
+              </div>
+
+              {layerStackOrder.map((layer, index) => (
+                <button
+                  key={layer.id}
+                  type="button"
+                  ref={(element) => {
+                    itemRefs.current[layer.id] = element
+                  }}
+                  className={isActive('layerIds', layer.id) ? 'knowledge-layer is-active' : 'knowledge-layer'}
+                  onMouseEnter={(event) => handleLayerEnter(layer, event.currentTarget)}
+                  onBlur={() => setTooltip(null)}
+                  onFocus={(event) => handleLayerEnter(layer, event.currentTarget)}
                 >
-                  {node.title}
-                </text>
-                <text
-                  textAnchor="middle"
-                  className="node-subtitle"
-                  fill="#c7dbd1"
-                  fontSize="11"
-                  dy={76}
-                  style={{ pointerEvents: 'none', userSelect: 'none' }}
+                  <span>{localizedLayers[index]?.title ?? layer.title}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="knowledge-capabilities">
+              {capabilities.map((capability, index) => (
+                <button
+                  key={capability.id}
+                  type="button"
+                  ref={(element) => {
+                    itemRefs.current[capability.id] = element
+                  }}
+                  className={isActive('capabilityIds', capability.id) ? 'capability-chip is-active' : 'capability-chip'}
+                  onMouseEnter={() => setHoveredId(capability.id)}
+                  onBlur={() => setHoveredId(null)}
+                  onFocus={() => setHoveredId(capability.id)}
                 >
-                  {node.subtitle}
-                </text>
-              </g>
-            )
-          })}
-        </g>
-      </svg>
+                  {localizedCapabilities[index]?.title ?? capability.title}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="knowledge-column knowledge-column-outputs">
+            {outputs.map((output, index) => (
+              <button
+                key={output.id}
+                type="button"
+                ref={(element) => {
+                  itemRefs.current[output.id] = element
+                }}
+                className={isActive('outputIds', output.id) ? 'knowledge-card is-active' : 'knowledge-card'}
+                onMouseEnter={() => setHoveredId(output.id)}
+                onBlur={() => setHoveredId(null)}
+                onFocus={() => setHoveredId(output.id)}
+              >
+                <span>{localizedOutputs[index]?.title ?? output.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {tooltip && tooltip.layer.purpose && tooltip.layer.value && tooltip.layer.outcome && (
+        <div className="layer-tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
+          <strong>{tooltip.layer.title}</strong>
+          <p><span>{content.detailLabels.purpose}</span>{tooltip.layer.purpose}</p>
+          <p><span>{content.detailLabels.value}</span>{tooltip.layer.value}</p>
+          <p><span>{content.detailLabels.outcome}</span>{tooltip.layer.outcome}</p>
+        </div>
+      )}
+
+      <article className="knowledge-detail-panel" aria-live="polite">
+        {(() => {
+          const displayItem = getLocalizedDisplay(activeItem)
+          return (
+            <>
+              <span className="knowledge-detail-kind">{content.itemKinds[activeItem.kind]}</span>
+              <h3>{displayItem.title}</h3>
+              <p>{displayItem.detail}</p>
+            </>
+          )
+        })()}
+      </article>
     </div>
   )
 }
