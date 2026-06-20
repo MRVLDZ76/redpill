@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Building2, Menu, Moon, ShieldCheck, Sparkles, Sun, X } from 'lucide-react'
 import './App.css'
-import FooterGlowLogo from './FooterGlowLogo.tsx'
+ 
 
 type ThemeMode = 'light' | 'dark'
 
@@ -309,7 +309,7 @@ function UseCasesPage() {
         </div>
 
         <div>
-          <FooterGlowLogo />
+   
           <p className="footer-thesis">
             Enterprise use cases prove the thesis: structure knowledge first, then let AI reason with confidence.
           </p>
