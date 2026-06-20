@@ -35,6 +35,24 @@ const DESTINATION_EMAIL = import.meta.env.VITE_CONTACT_RECEIVER_EMAIL ?? 'noahed
 const CONTACT_COOLDOWN_MS = 60_000
 const CONTACT_MIN_SUBMIT_DELAY_MS = 3_000
 const CONTACT_LAST_SENT_KEY = 'contact-last-sent-at'
+const CLIENT_LOGOS = [
+  {
+    name: 'Samsung',
+    src: '/logos/Samsung_idLNQNZGf5_0.svg',
+  },
+  {
+    name: 'HP',
+    src: '/logos/HP_Logo_0.svg',
+  },
+  {
+    name: 'SAP',
+    src: '/logos/SAP_idL9dEduKh_0.svg',
+  },
+  {
+    name: 'Nationwide Insurance',
+    src: '/logos/Nationwide_Insurance_Logo_0.svg',
+  },
+]
 
 const initialContactForm: ContactFormState = {
   name: '',
@@ -354,6 +372,24 @@ function App() {
 
         <div className="hero-visual">
           <KnowledgeGraph locale={locale} />
+        </div>
+      </section>
+
+      <section className="clients-section section-shell" aria-labelledby="clients-title">
+        <div className="clients-wrap">
+          <div className="clients-copy">
+            <span className="eyebrow">{copy.clients.eyebrow}</span>
+            <h2 id="clients-title">{copy.clients.title}</h2>
+            <p>{copy.clients.subtitle}</p>
+          </div>
+
+          <ul className="clients-grid" aria-label="Client logos">
+            {CLIENT_LOGOS.map((logo) => (
+              <li key={logo.src} className="client-logo-tile">
+                <img src={logo.src} alt={logo.name} loading="lazy" decoding="async" />
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

@@ -47,6 +47,11 @@ type AppContent = {
     rotatingLabel: string
     rotatingStatements: string[]
   }
+  clients: {
+    eyebrow: string
+    title: string
+    subtitle: string
+  }
   failure: {
     eyebrow: string
     title: string
@@ -144,9 +149,9 @@ type KnowledgeGraphContent = {
 export const appCopy: Record<Locale, AppContent> = {
   en: {
     meta: {
-      title: 'Red Pill Software | Enterprise Semantic Web & Knowledge Graph Architecture',
+      title: 'Red Pill Software | Enterprise Intelligence Architecture for Reliable AI',
       description:
-        'Enterprise semantic web technologies, ontology design, knowledge graph engineering, entity resolution, grounded retrieval, and AI architecture that make systems reliable.',
+        'From fragmented enterprise data to reliable AI outcomes through semantic architecture, knowledge graphs, and ontology engineering.',
     },
     nav: {
       approach: 'Approach',
@@ -176,6 +181,11 @@ export const appCopy: Record<Locale, AppContent> = {
         'Your knowledge graph is more important than your chatbot.',
         'Structure precedes intelligence.',
       ],
+    },
+    clients: {
+      eyebrow: 'Enterprise Partners',
+      title: 'Built for organizations that demand reliability.',
+      subtitle: 'Financial services, technology, healthcare, and manufacturing leaders trust Red Pill to architect AI systems that work.',
     },
     failure: {
       eyebrow: 'Why AI Projects Fail',
@@ -342,9 +352,9 @@ export const appCopy: Record<Locale, AppContent> = {
   },
   fr: {
     meta: {
-      title: 'Red Pill Software | Architecture Web Sémantique et Graphes de Connaissances',
+      title: 'Red Pill Software | Architecture d\'intelligence d\'entreprise pour une IA fiable',
       description:
-        'Technologies web sémantiques, conception d\'ontologies, ingénierie de graphes de connaissances, résolution d\'entités, retrieval fondé sur les données, et architecture IA fiable.',
+        'Des données d\'entreprise fragmentées vers des résultats IA fiables grâce à l\'architecture sémantique, aux ontologies et aux graphes de connaissances.',
     },
     nav: {
       approach: 'Approche',
@@ -374,6 +384,11 @@ export const appCopy: Record<Locale, AppContent> = {
         'Votre graphe de connaissances compte plus que votre chatbot.',
         'La structure précède l\'intelligence.',
       ],
+    },
+    clients: {
+      eyebrow: 'Partenaires Entreprise',
+      title: 'Construit pour les organisations qui exigent la fiabilité.',
+      subtitle: 'Les leaders des services financiers, de la technologie, de la santé et de la fabrication font confiance à Red Pill pour concevoir des systèmes IA qui fonctionnent.',
     },
     failure: {
       eyebrow: 'Pourquoi les projets IA échouent',
@@ -540,9 +555,9 @@ export const appCopy: Record<Locale, AppContent> = {
   },
   es: {
     meta: {
-      title: 'Red Pill Software | Arquitectura Web Semántica y Grafos de Conocimiento',
+      title: 'Red Pill Software | Arquitectura de inteligencia empresarial para IA confiable',
       description:
-        'Tecnologías web semánticas, diseño de ontologías, ingeniería de grafos de conocimiento, resolución de entidades, retrieval fundamentado y arquitectura de IA confiable.',
+        'De datos empresariales fragmentados a resultados de IA confiables mediante arquitectura semántica, ontologías e ingeniería de grafos de conocimiento.',
     },
     nav: {
       approach: 'Enfoque',
@@ -572,6 +587,11 @@ export const appCopy: Record<Locale, AppContent> = {
         'Tu grafo de conocimiento importa más que tu chatbot.',
         'La estructura precede a la inteligencia.',
       ],
+    },
+    clients: {
+      eyebrow: 'Socios Empresariales',
+      title: 'Creado para organizaciones que exigen confiabilidad.',
+      subtitle: 'Los líderes de servicios financieros, tecnología, salud y fabricación confían en Red Pill para arquitecturar sistemas de IA que funcionan.',
     },
     failure: {
       eyebrow: 'Por qué fallan los proyectos de IA',
