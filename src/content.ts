@@ -346,7 +346,7 @@ export const appCopy: Record<Locale, AppContent> = {
     },
     footer: {
       tagline: 'Knowledge Before AI.',
-      address: ['7901 4TH ST N', 'STE 300', 'ST. PETERSBURG, FL 33702'],
+      address: ['7901 4TH ST N, STE 300', 'ST. PETERSBURG, FL 33702 - USA' ],
       links: ['Approach', 'Services', 'Insights', 'Contact', 'LinkedIn'],
     },
   },
@@ -549,7 +549,7 @@ export const appCopy: Record<Locale, AppContent> = {
     },
     footer: {
       tagline: 'La connaissance avant l\'IA.',
-      address: ['7901 4TH ST N', 'STE 300', 'ST. PETERSBURG, FL 33702'],
+      address: ['7901 4TH ST N, STE 300', 'ST. PETERSBURG, FL 33702 - USA' ],
       links: ['Approche', 'Services', 'Analyses', 'Contact', 'LinkedIn'],
     },
   },
@@ -752,7 +752,7 @@ export const appCopy: Record<Locale, AppContent> = {
     },
     footer: {
       tagline: 'Conocimiento antes que IA.',
-      address: ['7901 4TH ST N', 'STE 300', 'ST. PETERSBURG, FL 33702'],
+      address: ['7901 4TH ST N, STE 300', 'ST. PETERSBURG, FL 33702 - USA' ],
       links: ['Enfoque', 'Servicios', 'Ideas', 'Contacto', 'LinkedIn'],
     },
   },
