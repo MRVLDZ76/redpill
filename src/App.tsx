@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import './App.css'
 import KnowledgeGraph from './KnowledgeGraph.tsx'
-import FooterGlowLogo from './FooterGlowLogo.tsx'
+
 import { getAppContent, localeLabels, supportedLocales, type Locale } from './content.ts'
 
 type ThemeMode = 'light' | 'dark'
