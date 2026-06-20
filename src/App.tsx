@@ -36,9 +36,13 @@ const CONTACT_COOLDOWN_MS = 60_000
 const CONTACT_MIN_SUBMIT_DELAY_MS = 3_000
 const CONTACT_LAST_SENT_KEY = 'contact-last-sent-at'
 const CLIENT_LOGOS = [
+  //{
+    //name: 'Samsung',
+    // src: '/logos/Samsung_idLNQNZGf5_0.svg',
+ // },
   {
-    name: 'Samsung',
-    src: '/logos/Samsung_idLNQNZGf5_0.svg',
+    name: 'Coinbase',
+    src: '/logos/Coinbase_id8ei2lvLT_0.svg',
   },
   {
     name: 'HP',
