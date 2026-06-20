@@ -194,74 +194,92 @@ function App() {
     }))
   }
 
-  const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  event.preventDefault()
 
-    if (submitState === 'sending') {
-      return
-    }
-
-    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
-      setSubmitState('error')
-      setSubmitMessage(copy.contact.messages.configMissing)
-      return
-    }
-
-    if (contactForm.website.trim().length > 0) {
-      setSubmitState('success')
-      setSubmitMessage(copy.contact.messages.spam)
-      return
-    }
-
-    if (!contactForm.consent) {
-      setSubmitState('error')
-      setSubmitMessage(copy.contact.messages.spam)
-      return
-    }
-
-    if (Date.now() - formOpenedAt < CONTACT_MIN_SUBMIT_DELAY_MS) {
-      setSubmitState('error')
-      setSubmitMessage(copy.contact.messages.fastSubmit)
-      return
-    }
-
-    const previousSentAt = Number(window.localStorage.getItem(CONTACT_LAST_SENT_KEY) ?? '0')
-    if (Date.now() - previousSentAt < CONTACT_COOLDOWN_MS) {
-      setSubmitState('error')
-      setSubmitMessage(copy.contact.messages.cooldown)
-      return
-    }
-
-    setSubmitState('sending')
-    setSubmitMessage('')
-
-    try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        {
-          to_email: DESTINATION_EMAIL,
-          from_name: contactForm.name,
-          company: contactForm.company,
-          reply_to: contactForm.email,
-          subject: contactForm.subject,
-          message: contactForm.message,
-        },
-        {
-          publicKey: EMAILJS_PUBLIC_KEY,
-        }
-      )
-
-      setSubmitState('success')
-      setSubmitMessage(copy.contact.messages.success)
-      window.localStorage.setItem(CONTACT_LAST_SENT_KEY, String(Date.now()))
-      setContactForm(initialContactForm)
-      setFormOpenedAt(Date.now())
-    } catch {
-      setSubmitState('error')
-      setSubmitMessage(copy.contact.messages.error)
-    }
+  if (submitState === 'sending') {
+    return
   }
+
+  // Check config
+  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+    setSubmitState('error')
+    setSubmitMessage(copy.contact.messages.configMissing)
+    return
+  }
+
+  // Honeypot check
+  if (contactForm.website.trim().length > 0) {
+    setSubmitState('success')
+    setSubmitMessage(copy.contact.messages.spam)
+    return
+  }
+
+  // Consent validation
+  if (!contactForm.consent) {
+    setSubmitState('error')
+    setSubmitMessage('Please agree to the privacy policy to continue')
+    return
+  }
+
+  // Rate limiting
+  if (Date.now() - formOpenedAt < CONTACT_MIN_SUBMIT_DELAY_MS) {
+    setSubmitState('error')
+    setSubmitMessage('Please wait a moment before submitting again.')
+    return
+  }
+
+  // Cooldown check
+  const previousSentAt = Number(window.localStorage.getItem(CONTACT_LAST_SENT_KEY) ?? '0')
+  if (Date.now() - previousSentAt < CONTACT_COOLDOWN_MS) {
+    setSubmitState('error')
+    setSubmitMessage('You have already submitted recently. Please try again later.')
+    return
+  }
+
+  setSubmitState('sending')
+  setSubmitMessage('')
+
+  try {
+    // Send to EmailJS with template variables that MATCH your template
+    const templateParams = {
+      name: contactForm.name,
+      title: contactForm.subject,
+      // Add destination email to the template params
+      to_email: DESTINATION_EMAIL, // This will be the recipient
+      // Optional: include other fields if your template uses them
+      email: contactForm.email,
+      company: contactForm.company,
+      message: contactForm.message,
+    }
+
+    console.log('Sending email with params:', templateParams)
+
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      templateParams,
+      {
+        publicKey: EMAILJS_PUBLIC_KEY,
+      }
+    )
+
+    setSubmitState('success')
+    setSubmitMessage(copy.contact.messages.success)
+    window.localStorage.setItem(CONTACT_LAST_SENT_KEY, String(Date.now()))
+    setContactForm(initialContactForm)
+    setFormOpenedAt(Date.now())
+  } catch (error) {
+    console.error('Email send error:', error)
+    
+    if (error && typeof error === 'object' && 'text' in error) {
+      console.error('Error details:', (error as any).text)
+    }
+    
+    setSubmitState('error')
+    setSubmitMessage(copy.contact.messages.error)
+  }
+}
 
   return (
     <main className="page-shell">
