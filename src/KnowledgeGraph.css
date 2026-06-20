@@ -11,10 +11,7 @@
   overflow: visible;
   padding: 30px;
   border: 1px solid var(--line-soft);
-  border-radius: 24px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, white), color-mix(in srgb, var(--surface) 82%, transparent));
-  box-shadow: var(--card-shadow);
+ 
 }
 
 .knowledge-frame::before {
