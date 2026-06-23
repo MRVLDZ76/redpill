@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Building2, Menu, Moon, ShieldCheck, Sparkles, Sun, X } from 'lucide-react'
 import './App.css'
+import { applySeoMetadata } from './seo.ts'
  
 
 type ThemeMode = 'light' | 'dark'
@@ -17,6 +18,8 @@ type UseCase = {
 
 const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL ?? 'https://www.linkedin.com/'
 const CALENDLY_URL = import.meta.env.VITE_CALENDLY_URL ?? '/#contact'
+const USE_CASES_OG_IMAGE_URL = 'https://redpill.software/og-image-use-cases.png'
+const USE_CASES_URL = 'https://redpill.software/use-cases'
 
 const useCases: UseCase[] = [
   {
@@ -97,7 +100,13 @@ function UseCasesPage() {
   useEffect(() => {
     document.documentElement.dataset.theme = themeMode
     window.localStorage.setItem('theme-mode', themeMode)
-    document.title = 'Red Pill Software | Enterprise AI Use Cases'
+    applySeoMetadata({
+      title: 'Red Pill Software | Enterprise AI Use Cases',
+      description: 'Enterprise AI use cases across tax intelligence, biopharma knowledge operations, and financial advisory systems.',
+      canonicalUrl: USE_CASES_URL,
+      ogUrl: USE_CASES_URL,
+      ogImage: USE_CASES_OG_IMAGE_URL,
+    })
   }, [themeMode])
 
   useEffect(() => {
@@ -122,10 +131,19 @@ function UseCasesPage() {
     <main className="page-shell use-cases-page-shell">
       <header className="site-header section-shell" aria-label="Primary navigation">
         <a className="brand" href="/" aria-label="Red Pill Software home">
-          <span className="brand-mark" aria-hidden="true" />
+          <img
+            className="brand-mark"
+            src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-edited.png"
+            width={1347}
+            height={433}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
           <span className="brand-copy">
             <strong>Red Pill Software</strong>
-            <span>Knowledge Before AI.</span>
           </span>
         </a>
 
@@ -286,13 +304,21 @@ function UseCasesPage() {
       <footer className="site-footer section-shell" aria-label="Footer">
         <div className="footer-brand">
           <a className="brand" href="/" aria-label="Red Pill Software home">
-            <span className="brand-mark" aria-hidden="true" />
+            <img
+              className="brand-mark"
+              src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-edited.png"
+              width={1347}
+              height={433}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+            />
             <span className="brand-copy">
               <strong>Red Pill Software</strong>
               <span>Enterprise Intelligence Architecture</span>
             </span>
           </a>
-          <p>Knowledge Before AI.</p>
           <address className="footer-address">
             <span>7901 4TH ST N, STE 300</span>
             <span>ST. PETERSBURG, FL 33702 - USA</span>

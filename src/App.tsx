@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import './App.css'
 import KnowledgeGraph from './KnowledgeGraph.tsx'
+import { applySeoMetadata } from './seo.ts'
 
 import { getAppContent, localeLabels, supportedLocales, type Locale } from './content.ts'
 
@@ -37,6 +38,35 @@ const DESTINATION_EMAIL = import.meta.env.VITE_CONTACT_RECEIVER_EMAIL ?? 'noahed
 const CONTACT_COOLDOWN_MS = 60_000
 const CONTACT_MIN_SUBMIT_DELAY_MS = 3_000
 const CONTACT_LAST_SENT_KEY = 'contact-last-sent-at'
+const HOME_URL = 'https://redpill.software/'
+const HOME_OG_IMAGE_URL = 'https://redpill.software/og-image.png'
+
+type IndustryOption = {
+  en: string
+  fr: string
+  es: string
+}
+
+const INDUSTRY_OPTIONS: IndustryOption[] = [
+  { en: 'Technology', fr: 'Technologie', es: 'Tecnologia' },
+  { en: 'Financial Services', fr: 'Services financiers', es: 'Servicios financieros' },
+  { en: 'Healthcare & Life Sciences', fr: 'Sante et sciences de la vie', es: 'Salud y ciencias de la vida' },
+  { en: 'Manufacturing', fr: 'Industrie manufacturiere', es: 'Manufactura' },
+  { en: 'Retail & E-commerce', fr: 'Commerce et e-commerce', es: 'Retail y comercio electronico' },
+  { en: 'Energy & Utilities', fr: 'Energie et services publics', es: 'Energia y servicios publicos' },
+  { en: 'Telecommunications', fr: 'Telecommunications', es: 'Telecomunicaciones' },
+  { en: 'Transportation & Logistics', fr: 'Transport et logistique', es: 'Transporte y logistica' },
+  { en: 'Public Sector', fr: 'Secteur public', es: 'Sector publico' },
+  { en: 'Education', fr: 'Education', es: 'Educacion' },
+  { en: 'Media & Entertainment', fr: 'Medias et divertissement', es: 'Medios y entretenimiento' },
+  { en: 'Professional Services', fr: 'Services professionnels', es: 'Servicios profesionales' },
+  { en: 'Other', fr: 'Autre', es: 'Otro' },
+]
+const INDUSTRY_PLACEHOLDER_BY_LOCALE: Record<Locale, string> = {
+  en: 'Select an industry',
+  fr: 'Sélectionnez un secteur',
+  es: 'Seleccione una industria',
+}
 const CLIENT_LOGOS = [
   //{
     //name: 'Samsung',
@@ -153,20 +183,13 @@ function App() {
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.title = copy.meta.title
-
-    const updateMeta = (selector: string, value: string) => {
-      const element = document.querySelector<HTMLMetaElement>(selector)
-      if (element) {
-        element.setAttribute('content', value)
-      }
-    }
-
-    updateMeta('meta[name="description"]', copy.meta.description)
-    updateMeta('meta[property="og:title"]', copy.meta.title)
-    updateMeta('meta[property="og:description"]', copy.meta.description)
-    updateMeta('meta[name="twitter:title"]', copy.meta.title)
-    updateMeta('meta[name="twitter:description"]', copy.meta.description)
+    applySeoMetadata({
+      title: copy.meta.title,
+      description: copy.meta.description,
+      canonicalUrl: HOME_URL,
+      ogUrl: HOME_URL,
+      ogImage: HOME_OG_IMAGE_URL,
+    })
   }, [copy.meta.description, copy.meta.title, locale])
 
   useEffect(() => {
@@ -285,10 +308,19 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
     <main className="page-shell">
       <header className="site-header section-shell" aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="Red Pill Software home">
-          <span className="brand-mark" aria-hidden="true" />
+          <img
+            className="brand-mark"
+            src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png"
+            width={1347}
+            height={433}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
           <span className="brand-copy">
-            <strong>Red Pill Software</strong>
-            <span>{copy.footer.tagline}</span>
+           
           </span>
         </a>
 
@@ -619,13 +651,21 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
 
               <label>
                 <span>{copy.contact.fields.company}</span>
-                <input
-                  type="text"
+                <select
                   name="company"
                   value={contactForm.company}
                   onChange={(event) => handleContactChange('company', event.target.value)}
                   required
-                />
+                >
+                  <option value="" disabled>
+                    {INDUSTRY_PLACEHOLDER_BY_LOCALE[locale]}
+                  </option>
+                  {INDUSTRY_OPTIONS.map((industry) => (
+                    <option key={industry.en} value={industry[locale]}>
+                      {industry[locale]}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label>
@@ -706,13 +746,21 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
       <footer className="site-footer section-shell" aria-label="Footer">
         <div className="footer-brand">
           <a className="brand" href="#top" aria-label="Red Pill Software home">
-            <span className="brand-mark" aria-hidden="true" />
+            <img
+              className="brand-mark"
+              src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png"
+              width={1347}
+              height={433}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+            />
             <span className="brand-copy">
-              <strong>Red Pill Software</strong>
+             
               <span>Enterprise Intelligence Architecture</span>
             </span>
           </a>
-          <p>{copy.footer.tagline}</p>
           <address className="footer-address">
             {copy.footer.address.map((line) => (
               <span key={line}>{line}</span>
@@ -732,7 +780,7 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
         <div>
         
           <p className="footer-thesis">
-            Red Pill Software helps organizations structure knowledge before AI systems are asked to reason over it.
+            Red Pill Software helps organizations build semantic foundations so AI systems can reason with trusted context.
           </p>
         </div>
           

@@ -33,12 +33,10 @@
 }
 
 .brand-mark {
-  width: 24px;
-  height: 46px;
-  border-radius: 999px;
-  transform: rotate(-32deg);
-  background: linear-gradient(180deg, #f37d7a 0%, #d83935 48%, #891b19 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  width: clamp(102px, 11.05vw, 143px);
+  height: auto;
+  object-fit: contain;
+  object-position: left center;
   flex: 0 0 auto;
 }
 
@@ -735,6 +733,7 @@
 }
 
 .contact-form input,
+.contact-form select,
 .contact-form textarea {
   width: 100%;
   border: 1px solid var(--line-soft);
@@ -746,9 +745,23 @@
 }
 
 .contact-form input:focus,
+.contact-form select:focus,
 .contact-form textarea:focus {
   border-color: color-mix(in srgb, var(--red) 32%, var(--line));
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--red) 14%, transparent);
+}
+
+.contact-form select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
 }
 
 .contact-form-full {

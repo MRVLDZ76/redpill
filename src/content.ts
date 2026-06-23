@@ -326,7 +326,7 @@ export const appCopy: Record<Locale, AppContent> = {
       intro: 'If the initiative is serious, the first conversation should focus on knowledge architecture, governance, and operating constraints before model selection.',
       fields: {
         name: 'Name',
-        company: 'Company',
+        company: 'Company Industry',
         email: 'Email',
         subject: 'Subject',
         message: 'Message',
@@ -529,7 +529,7 @@ export const appCopy: Record<Locale, AppContent> = {
       intro: 'Si l\'initiative est sérieuse, la première conversation doit porter sur l\'architecture de connaissance, la gouvernance et les contraintes d\'exploitation avant le choix du modèle.',
       fields: {
         name: 'Nom',
-        company: 'Entreprise',
+        company: 'Secteur de l\'entreprise',
         email: 'Email',
         subject: 'Sujet',
         message: 'Message',
@@ -732,7 +732,7 @@ export const appCopy: Record<Locale, AppContent> = {
       intro: 'Si la iniciativa es seria, la primera conversación debe centrarse en arquitectura de conocimiento, gobernanza y restricciones operativas antes de elegir el modelo.',
       fields: {
         name: 'Nombre',
-        company: 'Empresa',
+        company: 'Industria de la empresa',
         email: 'Correo',
         subject: 'Asunto',
         message: 'Mensaje',

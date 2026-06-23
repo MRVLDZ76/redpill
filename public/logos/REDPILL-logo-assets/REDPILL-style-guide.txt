@@ -1,0 +1,15 @@
+STYLE GUIDE — REDPILL
+========================================
+Brand Name:    REDPILL
+Tagline:       SOFTWARE
+Industry:      SaaS / Software
+Primary Color: #ff0000
+Font Family:   Montserrat
+Style:         modern
+Color Scheme:  pastel
+Layout:        icon-left
+─── AI-Generated Brand Guidelines ───
+
+Create a set of brand style guidelines for "REDPILL," a modern SaaS/software company, featuring the tagline "SOFTWARE." The visual style should embrace clean lines and minimalism, utilizing a pastel color palette with the primary brand color #ff0000. Include a detailed breakdown of brand personality that conveys innovation and reliability, along with specific hex color codes for complementary shades (e.g., #ffcccc, #ff9999). Typography should focus on the Montserrat font family, emphasizing clarity and modernity. Provide clear usage rules to ensure consistent application of the brand elements across various media. 
+
+Visualize this in a well-structured layout, showcasing examples of branding materials such as business cards, website mockups, and social media graphics. Set the scene in a bright, airy workspace with soft, diffused natural lighting that enhances the pastel colors, creating an inviting and professional atmosphere. Use a high-resolution rendering technique to ensure crisp details and vibrant color representation, capturing the essence of a cutting-edge software brand.
