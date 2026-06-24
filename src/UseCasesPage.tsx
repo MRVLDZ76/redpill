@@ -16,7 +16,7 @@ type UseCase = {
   bullets: string[]
 }
 
-const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL ?? 'https://www.linkedin.com/'
+const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL ?? 'https://www.linkedin.com/in/red-pill-software'
 const CALENDLY_URL = import.meta.env.VITE_CALENDLY_URL ?? '/#contact'
 const USE_CASES_OG_IMAGE_URL = 'https://redpill.software/og-image-use-cases.png'
 const USE_CASES_URL = 'https://redpill.software/use-cases'
@@ -133,7 +133,7 @@ function UseCasesPage() {
         <a className="brand" href="/" aria-label="Red Pill Software home">
           <img
             className="brand-mark"
-            src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-edited.png"
+            src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png"
             width={1347}
             height={433}
             alt=""
@@ -142,9 +142,7 @@ function UseCasesPage() {
             decoding="async"
             fetchPriority="high"
           />
-          <span className="brand-copy">
-            <strong>Red Pill Software</strong>
-          </span>
+       
         </a>
 
         <nav className="site-nav site-nav-desktop" aria-label="Primary links">
@@ -306,7 +304,7 @@ function UseCasesPage() {
           <a className="brand" href="/" aria-label="Red Pill Software home">
             <img
               className="brand-mark"
-              src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-edited.png"
+              src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png"
               width={1347}
               height={433}
               alt=""
@@ -314,10 +312,6 @@ function UseCasesPage() {
               loading="lazy"
               decoding="async"
             />
-            <span className="brand-copy">
-              <strong>Red Pill Software</strong>
-              <span>Enterprise Intelligence Architecture</span>
-            </span>
           </a>
           <address className="footer-address">
             <span>7901 4TH ST N, STE 300</span>
