@@ -171,8 +171,8 @@ p { color: var(--muted); line-height: 1.72; }
   position: sticky;
   top: 0;
   z-index: 20;
-  backdrop-filter: blur(18px);
-  background: linear-gradient(180deg, rgba(7, 17, 31, 0.95), rgba(7, 17, 31, 0.72));
+  backdrop-filter: blur(20px);
+  background: linear-gradient(180deg, rgba(7, 17, 31, 0.96), rgba(7, 17, 31, 0.78));
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -180,45 +180,84 @@ p { color: var(--muted); line-height: 1.72; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 22px;
+  gap: 28px;
   padding: 14px 0;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
+  flex: 0 0 auto;
   text-decoration: none;
 }
 
-.brand-mark { width: 132px; height: auto; }
+.brand-mark { width: 120px; height: auto; }
 
-.brand-meta { display: grid; gap: 2px; }
-.brand-meta strong { font-size: 0.94rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.brand-meta span { color: var(--muted-soft); font-size: 0.82rem; }
+.brand-meta {
+  display: grid;
+  gap: 1px;
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+}
+.brand-meta strong { font-size: 0.92rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.brand-meta span { color: var(--muted-soft); font-size: 0.78rem; letter-spacing: 0.04em; }
 
-.nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; align-items: center; }
-.nav a {
-  padding: 9px 13px;
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.nav-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 9px 15px;
   border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+.nav-home svg { width: 15px; height: 15px; }
+.nav-home:hover,
+.nav-home:focus-visible {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.26);
+}
+.nav-divider { flex: 0 0 auto; width: 1px; height: 22px; background: var(--line); }
+.nav-sections {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nav-sections::-webkit-scrollbar { display: none; }
+.nav-sections a {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border-radius: 10px;
   border: 1px solid transparent;
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.82rem;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  background: rgba(255,255,255,0.03);
+  font-size: 0.83rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: color 0.18s ease, background-color 0.18s ease;
 }
-.nav a:hover,
-.nav a:focus-visible { color: var(--text); border-color: var(--line); }
-.nav .nav-home {
-  background: rgba(255,255,255,0.10);
-  border-color: rgba(255,255,255,0.18);
+.nav-sections a:hover,
+.nav-sections a:focus-visible {
   color: var(--text);
-}
-.nav .nav-home:hover,
-.nav .nav-home:focus-visible {
-  background: rgba(255,255,255,0.16);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 section { padding: 84px 0; }
@@ -705,8 +744,10 @@ section { padding: 84px 0; }
   .mini-grid,
   .signal-row { grid-template-columns: 1fr; }
 
-  .topbar-inner { flex-direction: column; align-items: flex-start; }
-  .nav { justify-content: flex-start; }
+  .topbar-inner { flex-direction: column; align-items: stretch; gap: 14px; }
+  .brand { justify-content: flex-start; }
+  .nav { width: 100%; }
+  .nav-sections { flex: 1 1 auto; }
 }
 
 @media (max-width: 720px) {
@@ -736,13 +777,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </a>
 
       <nav class="nav" aria-label="Brief sections">
-        <a class="nav-home" href="https://redpill.software/">Red Pill Home</a>
-        <a href="#problem">Problem</a>
-        <a href="#positioning">Where it fits</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#capabilities">Capabilities</a>
-        <a href="#use-cases">Use cases</a>
-        <a href="#imagery">Executive visual</a>
+        <a class="nav-home" href="https://redpill.software/">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 6l-6 6 6 6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Red Pill Home
+        </a>
+        <span class="nav-divider" aria-hidden="true"></span>
+        <span class="nav-sections">
+          <a href="#problem">Problem</a>
+          <a href="#positioning">Where it fits</a>
+          <a href="#architecture">Architecture</a>
+          <a href="#capabilities">Capabilities</a>
+          <a href="#use-cases">Use cases</a>
+          <a href="#imagery">Executive visual</a>
+        </span>
       </nav>
     </div>
   </header>
