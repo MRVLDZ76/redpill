@@ -51,6 +51,7 @@ type IndustryOption = {
 const INDUSTRY_OPTIONS: IndustryOption[] = [
   { en: 'Technology', fr: 'Technologie', es: 'Tecnologia' },
   { en: 'Financial Services', fr: 'Services financiers', es: 'Servicios financieros' },
+  { en: 'Insurance', fr: 'Assurance', es: 'Seguros' },
   { en: 'Healthcare & Life Sciences', fr: 'Sante et sciences de la vie', es: 'Salud y ciencias de la vida' },
   { en: 'Manufacturing', fr: 'Industrie manufacturiere', es: 'Manufactura' },
   { en: 'Retail & E-commerce', fr: 'Commerce et e-commerce', es: 'Retail y comercio electronico' },
