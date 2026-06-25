@@ -450,7 +450,7 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
                 <span>{copy.ontoligent.ctaPrimary}</span>
                 <ArrowUpRight size={16} aria-hidden="true" />
               </a>
-              <a className="secondary-cta" {...getLinkProps('/logos/Ontoligent_Executive_Brief.html')}>
+              <a className="secondary-cta" {...getLinkProps('/briefs/ontoligent-executive-brief.html')}>
                 {copy.ontoligent.ctaSecondary}
               </a>
             </div>
