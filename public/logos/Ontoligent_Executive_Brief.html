@@ -1,75 +1,883 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ontoligent Executive Brief</title>
+<meta name="description" content="Executive brief for Ontoligent, the enterprise knowledge operating system for governed AI architecture.">
 <style>
-body{font-family:Arial,sans-serif;margin:0;background:#0f172a;color:#fff}
-section{padding:60px;min-height:70vh;border-bottom:1px solid #334155}
-h1,h2{margin-top:0}
-.hero{background:linear-gradient(135deg,#0f172a,#1e293b)}
-.card{background:#1e293b;padding:20px;border-radius:12px;margin:12px 0}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-code{display:block;background:#111827;padding:12px;border-radius:8px}
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #07111f;
+  --bg-alt: #0c1626;
+  --panel: rgba(14, 24, 39, 0.86);
+  --panel-strong: rgba(20, 32, 52, 0.96);
+  --line: rgba(255, 255, 255, 0.10);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --text: #f5f7fb;
+  --muted: rgba(233, 239, 249, 0.78);
+  --muted-soft: rgba(233, 239, 249, 0.56);
+  --red: #ff4b4b;
+  --red-soft: rgba(255, 75, 75, 0.14);
+  --green: #7de0bc;
+  --gold: #ffd3a3;
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+  --shadow-soft: 0 14px 36px rgba(0, 0, 0, 0.20);
+  --radius: 24px;
+  --radius-lg: 30px;
+  --max: 1180px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 75, 75, 0.12), transparent 28%),
+    radial-gradient(circle at 82% 0%, rgba(125, 224, 188, 0.10), transparent 26%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 36px 36px;
+  opacity: 0.36;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 92%);
+}
+
+a { color: inherit; }
+
+img, svg { display: block; max-width: 100%; }
+
+h1, h2, h3, p { margin: 0; }
+
+h1, h2, h3 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+h1 { font-size: clamp(3rem, 6vw, 5.8rem); line-height: 0.94; max-width: 11.5ch; }
+h2 { font-size: clamp(2.1rem, 4vw, 4rem); line-height: 1; }
+h3 { font-size: 1.36rem; line-height: 1.08; }
+
+p { color: var(--muted); line-height: 1.72; }
+
+.page {
+  width: min(var(--max), calc(100% - 48px));
+  margin: 0 auto;
+  padding: 24px 0 72px;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(7, 17, 31, 0.95), rgba(7, 17, 31, 0.72));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 16px 0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+}
+
+.brand-mark { width: 132px; height: auto; }
+
+.brand-meta { display: grid; gap: 2px; }
+.brand-meta strong { font-size: 0.94rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.brand-meta span { color: var(--muted-soft); font-size: 0.82rem; }
+
+.nav { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
+.nav a {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.03);
+}
+.nav a:hover,
+.nav a:focus-visible { color: var(--text); border-color: var(--line); }
+
+section { padding: 84px 0; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: var(--red);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.eyebrow::before { content: ''; width: 20px; height: 1px; background: currentColor; }
+
+.hero {
+  position: relative;
+  padding-top: 68px;
+}
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+  gap: 28px;
+  align-items: center;
+}
+.lead {
+  max-width: 58ch;
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.support {
+  max-width: 64ch;
+  margin-top: 14px;
+}
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.button,
+.button-secondary,
+.cta,
+.cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  font-weight: 700;
+  transition: transform 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+.button:hover,
+.button-secondary:hover,
+.cta:hover,
+.cta-secondary:hover,
+.button:focus-visible,
+.button-secondary:focus-visible,
+.cta:focus-visible,
+.cta-secondary:focus-visible { transform: translateY(-1px); }
+.button, .cta { background: var(--text); color: #08101c; }
+.button-secondary, .cta-secondary { background: rgba(255,255,255,0.03); color: var(--text); border-color: var(--line); }
+
+.hero-card {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(20, 32, 52, 0.96), rgba(10, 18, 31, 0.94));
+  box-shadow: var(--shadow);
+}
+.hero-card img { border-radius: 18px; aspect-ratio: 16 / 10; object-fit: cover; border: 1px solid rgba(255,255,255,0.08); }
+.caption { color: var(--muted); font-size: 0.92rem; line-height: 1.6; }
+
+.signal-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.signal-row article,
+.card,
+.metric,
+.image-reco,
+.timeline-step,
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+}
+.signal-row article { padding: 16px; }
+.signal-row strong,
+.metric strong { display: block; color: var(--text); font-size: 1.05rem; margin-bottom: 4px; }
+.signal-row span,
+.metric span,
+.card p,
+.timeline-step p,
+.image-reco p,
+.image-reco li,
+.footer-note { color: var(--muted); line-height: 1.68; }
+
+.section-head { max-width: 760px; margin-bottom: 28px; }
+.section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+.section-head h2 { font-size: clamp(2.1rem, 4vw, 4rem); }
+.section-head p { margin-top: 14px; font-size: 1.02rem; }
+
+.grid-3, .metrics, .image-recos { display: grid; gap: 16px; }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.image-recos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.card { padding: 22px; }
+.card h3 { margin-bottom: 10px; }
+
+.split { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(320px, 1.08fr); gap: 24px; align-items: start; }
+.timeline { display: grid; gap: 12px; }
+.timeline-step { padding: 18px 18px 18px 56px; position: relative; }
+.timeline-step::before {
+  content: attr(data-step);
+  position: absolute; left: 18px; top: 18px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--red-soft); color: var(--red);
+  font-size: 0.78rem; font-weight: 700;
+  display: grid; place-items: center;
+}
+.timeline-step h3 { margin-bottom: 8px; }
+
+.architecture-diagram {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 1.2fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.diagram-panel {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+}
+
+.diagram-panel h3 {
+  margin-bottom: 10px;
+  font-size: 1.25rem;
+}
+
+.diagram-panel p {
+  font-size: 0.95rem;
+}
+
+.diagram-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.diagram-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+}
+
+.diagram-item svg,
+.use-case-icon svg {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  color: var(--red);
+}
+
+.diagram-item strong,
+.use-case-lead strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.diagram-item span,
+.use-case-lead span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.diagram-core {
+  position: relative;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255,75,75,0.12), transparent 18%),
+    linear-gradient(180deg, rgba(20,32,52,0.96), rgba(10,18,31,0.96));
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.diagram-core::before,
+.diagram-core::after {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+
+.diagram-core::after {
+  inset: 46px 36px;
+  border-color: rgba(125,224,188,0.12);
+}
+
+.diagram-core-header {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.diagram-core-header span {
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.diagram-core-header strong {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1.02;
+}
+
+.diagram-stack {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+}
+
+.diagram-node {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+}
+
+.diagram-node strong {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.diagram-node span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.diagram-node .node-chip {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--red-soft);
+  color: var(--text);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.diagram-bridge {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.diagram-bridge span {
+  min-height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.diagram-side {
+  display: grid;
+  gap: 12px;
+}
+
+.architecture-flow { display: none; }
+
+.use-case-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.use-case-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: var(--red);
+}
+
+.use-case-lead {
+  min-width: 0;
+}
+
+.use-case-lead h3 {
+  margin-bottom: 6px;
+}
+
+.use-case {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel-strong);
+}
+.badge {
+  padding: 6px 10px; border-radius: 999px;
+  background: var(--red-soft); color: var(--text);
+  font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+.use-cases { display: grid; gap: 16px; }
+.use-case { padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel-strong); }
+.use-case h3 { margin-bottom: 10px; }
+.use-case p { margin-bottom: 14px; }
+.mini-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.mini-grid div {
+  padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03); color: var(--muted); font-size: 0.92rem; line-height: 1.45;
+}
+
+.image-reco { overflow: hidden; }
+.image-reco img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-bottom: 1px solid var(--line); }
+.image-reco .body { padding: 18px; }
+.image-reco h3 { margin-bottom: 8px; }
+.image-reco ul { margin: 12px 0 0; padding-left: 18px; }
+
+.foot-cta {
+  padding: 28px; border: 1px solid var(--line-strong); border-radius: 32px;
+  background: linear-gradient(135deg, rgba(255,75,75,0.14), rgba(20,32,52,0.94));
+  box-shadow: var(--shadow);
+}
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.pill-row span {
+  padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08); color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.footer-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.footer-links a {
+  padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--muted); text-decoration: none;
+}
+.footer-links a:hover,
+.footer-links a:focus-visible { color: var(--text); }
+
+@media (max-width: 980px) {
+  .hero-grid,
+  .split,
+  .flow-row,
+  .grid-3,
+  .metrics,
+  .image-recos,
+  .mini-grid,
+  .signal-row { grid-template-columns: 1fr; }
+
+  .topbar-inner { flex-direction: column; align-items: flex-start; }
+  .nav { justify-content: flex-start; }
+}
+
+@media (max-width: 720px) {
+  .page { width: min(var(--max), calc(100% - 28px)); padding-top: 18px; }
+  section { padding: 68px 0; }
+  .hero { padding-top: 42px; }
+  h1 { max-width: none; }
+  .hero-card, .foot-cta { padding: 20px; border-radius: 22px; }
+}
 </style>
 </head>
 <body>
-<section class="hero">
-<h1>Ontoligent</h1>
-<h2>The Enterprise Knowledge Operating System</h2>
-<p>Ontology • Knowledge Graphs • Retrieval • Agents • Governance</p>
-</section>
+<main class="page">
+  <header class="topbar" aria-label="Ontoligent brief navigation">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Ontoligent brief home">
+        <img class="brand-mark" src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png" alt="Red Pill Software">
+        <span class="brand-meta">
+          <strong>Ontoligent</strong>
+          <span>Executive brief</span>
+        </span>
+      </a>
 
-<section>
-<h2>Executive Problem</h2>
-<div class="card">Most AI initiatives start with models. Enterprise success starts with architecture, governance, semantics and knowledge.</div>
-</section>
+      <nav class="nav" aria-label="Brief sections">
+        <a href="#problem">Problem</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#use-cases">Use cases</a>
+        <a href="#imagery">Imagery</a>
+      </nav>
+    </div>
+  </header>
 
-<section>
-<h2>Architecture Studio</h2>
-<code>
-Business Requirements
-→ Architecture Recommendation
-→ Ontology Selection
-→ DAG Generation
-→ Retrieval Strategy
-→ Agent Architecture
-→ Governance & Evaluation
-</code>
-</section>
+  <section class="hero" id="top">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Enterprise Knowledge Operating System</span>
+        <h1>Ontoligent turns enterprise knowledge into governed intelligence.</h1>
+        <p class="lead">A polished product brief for enterprise buyers who need ontology-as-code, hybrid retrieval, auditable agents, and a control plane that makes AI production-ready instead of experimental.</p>
+        <p class="support">Ontoligent is not another chatbot layer. It is the architecture studio and operating substrate for regulated enterprise AI.</p>
 
-<section>
-<h2>Reference Architecture</h2>
-<div class="grid">
-<div class="card">Signals & Data Sources</div>
-<div class="card">Extraction Intelligence</div>
-<div class="card">Semantic Fabric</div>
-<div class="card">Knowledge Graph</div>
-<div class="card">Retrieval Intelligence</div>
-<div class="card">Agents & Actions</div>
-</div>
-</section>
+        <div class="hero-actions">
+          <a class="button" href="https://ontoligent.io" target="_blank" rel="noreferrer">Open the live product</a>
+          <a class="button-secondary" href="https://ontoligent.io/use-cases" target="_blank" rel="noreferrer">See use cases and blueprints</a>
+        </div>
+        <div class="pill-row" aria-label="Core themes">
+          <span>Ontology-as-code</span>
+          <span>Traceable runtime</span>
+          <span>Governed writeback</span>
+          <span>Domain packs</span>
+        </div>
+      </div>
 
-<section>
-<h2>Insurance Example</h2>
-<p>Claims → Entity Resolution → ACORD Ontology → GraphRAG → Decision Support → Approval Workflow</p>
-</section>
+      <aside class="hero-card" aria-label="Ontoligent summary panel">
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1400&auto=format&fit=crop" alt="Enterprise team reviewing strategy dashboards in a modern boardroom">
+        <p class="caption">Recommended cover image: a premium boardroom or strategy scene, darkened slightly so the brief feels executive and credible.</p>
 
-<section>
-<h2>Biomedical Example</h2>
-<p>Publications + Trials + Genes + Diseases + Drugs → Knowledge Graph → Research Discovery</p>
-</section>
+        <div class="signal-row" aria-label="Executive signals">
+          <article><strong>1 kernel</strong><span>ontology, retrieval, agents, and governance</span></article>
+          <article><strong>6 surfaces</strong><span>from Architecture Studio to budget controls</span></article>
+          <article><strong>Full lineage</strong><span>replayable traces, citations, and cost visibility</span></article>
+        </div>
+      </aside>
+    </div>
+  </section>
 
-<section>
-<h2>Why Ontoligent</h2>
-<ul>
-<li>Explainable AI</li>
-<li>Governed Decisions</li>
-<li>Knowledge Reuse</li>
-<li>Full Lineage</li>
-<li>Enterprise Ready</li>
-</ul>
-</section>
+  <section id="problem">
+    <div class="split">
+      <div class="section-head">
+        <span class="eyebrow">Executive summary</span>
+        <h2 id="summary-title">The product belongs in a flagship brief, not a hidden subpage.</h2>
+        <p>For enterprise buyers, the standard pattern is to make the flagship product visible in the main path and then support it with a dedicated, richly designed brief. That is how the strongest AI and data vendors present core products.</p>
+      </div>
+
+      <div class="timeline" aria-label="Problem to outcome path">
+        <div class="timeline-step" data-step="1">
+          <h3>Disconnected meaning</h3>
+          <p>Different teams use different definitions for the same customer, policy, claim, account, or asset.</p>
+        </div>
+        <div class="timeline-step" data-step="2">
+          <h3>Ungoverned retrieval</h3>
+          <p>Search returns plausible answers, but not ones that are permission-aware, traceable, or defensible.</p>
+        </div>
+        <div class="timeline-step" data-step="3">
+          <h3>Unsafe writeback</h3>
+          <p>The highest-value workflows are the ones teams hesitate to automate because there is no control plane.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="section-head center">
+      <span class="eyebrow">Architecture</span>
+      <h2 id="architecture-title">Architecture Studio turns a business problem into a deployable operating model.</h2>
+      <p>This is the strongest product story for an executive brief, because it mirrors how enterprise software is bought: problem first, architecture second, implementation third.</p>
+    </div>
+
+    <div class="architecture-diagram" aria-label="Ontoligent architecture diagram">
+      <div class="diagram-panel diagram-side">
+        <h3>Inputs</h3>
+        <p>Enterprise signals, policies, systems, and expert context feed the operating model.</p>
+        <div class="diagram-list">
+          <div class="diagram-item">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5h16M7 6.5v11m10-11v11M5.5 17.5h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div><strong>Sources</strong><span>Documents, systems, policies, experts, and events</span></div>
+          </div>
+          <div class="diagram-item">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6.5h12M6 12h12M6 17.5h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 6.5v11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div><strong>Policies</strong><span>Access rules, governance, and approval constraints</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-core">
+        <div class="diagram-core-header">
+          <span>Control plane</span>
+          <strong>Ontoligent architecture kernel</strong>
+        </div>
+        <div class="diagram-stack">
+          <div class="diagram-node">
+            <div>
+              <strong>Architecture Studio</strong>
+              <span>Problem intake to deployable recommendation</span>
+            </div>
+            <span class="node-chip">Guide</span>
+          </div>
+          <div class="diagram-node">
+            <div>
+              <strong>Ontology + graph</strong>
+              <span>Meaning, relationships, ACLs, and lineage</span>
+            </div>
+            <span class="node-chip">Model</span>
+          </div>
+          <div class="diagram-node">
+            <div>
+              <strong>Hybrid retrieval</strong>
+              <span>Vector, BM25, graph hops, reranking, routing</span>
+            </div>
+            <span class="node-chip">Reason</span>
+          </div>
+          <div class="diagram-node">
+            <div>
+              <strong>Governed actions</strong>
+              <span>Approval-gated, reversible writeback with traces</span>
+            </div>
+            <span class="node-chip">Act</span>
+          </div>
+        </div>
+        <div class="diagram-bridge" aria-label="Core outcomes">
+          <span>Lineage</span>
+          <span>Traceability</span>
+          <span>Budget control</span>
+          <span>Production safety</span>
+        </div>
+      </div>
+
+      <div class="diagram-panel diagram-side">
+        <h3>Outcomes</h3>
+        <p>The system produces answers and actions that can be audited, defended, and repeated across regulated workflows.</p>
+        <div class="diagram-list">
+          <div class="diagram-item">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5l7 4v9l-7 4-7-4v-9l7-4Z" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div><strong>Answer layer</strong><span>Trustworthy responses grounded in permissions and evidence</span></div>
+          </div>
+          <div class="diagram-item">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 17.5V12m5 5.5V8m4 9.5V5m5 12.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div><strong>Operational value</strong><span>Faster decisions, fewer blind spots, safer automation</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="capabilities">
+    <div class="section-head center">
+      <span class="eyebrow">Capability stack</span>
+      <h2>Enterprise-grade capabilities should read like a system, not a feature list.</h2>
+      <p>Keep the tone premium and operational. This section is designed as a structured architecture overview.</p>
+    </div>
+
+    <div class="grid-3">
+      <article class="card"><h3>Ontology as code</h3><p>Versioned types, canonical concepts, and language-agnostic normalization so meaning stays stable over time.</p></article>
+      <article class="card"><h3>Hybrid retrieval</h3><p>Vector, BM25, and graph traversal routed per query with permission-aware filtering and traceable responses.</p></article>
+      <article class="card"><h3>Agents and actions</h3><p>Observable agent steps, approval-gated writeback, dry-run support, reversibility, and replayable lineage.</p></article>
+      <article class="card"><h3>Governance and budget</h3><p>ABAC, cost ledger, and workspace-level controls so the system is safe enough for regulated work.</p></article>
+      <article class="card"><h3>Domain packs</h3><p>Vertical bundles for financial services, insurance, life sciences, and other audited operating environments.</p></article>
+      <article class="card"><h3>Execution proof</h3><p>Visible runtime behavior makes the product feel like infrastructure, not a black-box demo.</p></article>
+    </div>
+  </section>
+
+  <section id="use-cases">
+    <div class="section-head center">
+      <span class="eyebrow">Use cases</span>
+      <h2>Show concrete, enterprise-native examples instead of generic AI claims.</h2>
+      <p>These examples align with the business intent already documented in the repository and match the buyers Ontoligent targets.</p>
+    </div>
+
+    <div class="use-cases">
+      <article class="use-case">
+        <div class="use-case-header">
+          <span class="use-case-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5l7 3v4.3c0 4.3-2.7 8.2-7 9.7-4.3-1.5-7-5.4-7-9.7V6.5l7-3Z" stroke="currentColor" stroke-width="1.8"/><path d="M9.2 12.1l1.9 1.9 3.8-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div class="use-case-lead">
+            <h3>Insurance claims and policy operations</h3>
+            <span>ACORD-aligned claims, coverage, and approval workflows</span>
+          </div>
+        </div>
+        <p>Claims triage, coverage reasoning, policy evidence, and approval workflows grounded in a governed ontology.</p>
+        <div class="mini-grid"><div>ACORD ontology</div><div>Claim + policy lineage</div><div>Approval-gated actions</div></div>
+      </article>
+
+      <article class="use-case">
+        <div class="use-case-header">
+          <span class="use-case-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4.5 18.5h15M6.5 18.5V11m4 7.5V8.5m4 10V13m4 5.5V6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <div class="use-case-lead">
+            <h3>Financial services advisory intelligence</h3>
+            <span>Governed client, product, and compliance reasoning</span>
+          </div>
+        </div>
+        <p>Advisor copilots that reason across client, product, and compliance context with evidence-linked recommendations.</p>
+        <div class="mini-grid"><div>FIBO-aligned concepts</div><div>Permissioned retrieval</div><div>Explainable responses</div></div>
+      </article>
+
+      <article class="use-case">
+        <div class="use-case-header">
+          <span class="use-case-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M9.5 4.5h5M10 4.5v3.2L6.4 15a4 4 0 0 0 3.6 5.5h4a4 4 0 0 0 3.6-5.5L14 7.7V4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.1 13.5h7.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <div class="use-case-lead">
+            <h3>Life sciences and biomedical discovery</h3>
+            <span>Research, clinical, and regulatory knowledge connected</span>
+          </div>
+        </div>
+        <p>Research, clinical, and regulatory evidence connected into a coherent knowledge layer for faster decisions.</p>
+        <div class="mini-grid"><div>Trials and publications</div><div>Gene / disease / drug graph</div><div>Traceable discovery</div></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="imagery">
+    <div class="section-head center">
+      <span class="eyebrow">Recommended imagery</span>
+      <h2 id="imagery-title">Use a small, consistent image set. Avoid generic AI art.</h2>
+      <p>The page is strongest when the imagery feels like enterprise strategy, system architecture, and regulated operations.</p>
+    </div>
+
+    <div class="image-recos">
+      <article class="image-reco">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" alt="Financial services team reviewing dashboards in a strategy meeting">
+        <div class="body">
+          <h3>Executive workshop</h3>
+          <p>Use a boardroom or strategy session image to signal enterprise credibility and leadership alignment.</p>
+          <ul>
+            <li>Best use: hero cover or open graph image</li>
+            <li>Visual cue: leadership, strategy, and investment intent</li>
+            <li>Avoid: casual lifestyle photos or AI-face illustrations</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="image-reco">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop" alt="Team collaborating around a laptop and design board in a conference room">
+        <div class="body">
+          <h3>Architecture workshop</h3>
+          <p>Use a collaboration scene where the room includes dashboards, whiteboards, or working artifacts.</p>
+          <ul>
+            <li>Best use: product capability section</li>
+            <li>Visual cue: problem solving and implementation</li>
+            <li>Avoid: generic smiling office photos without context</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="image-reco">
+        <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?q=80&w=1200&auto=format&fit=crop" alt="Biopharma researchers working in a laboratory environment">
+        <div class="body">
+          <h3>Regulated operations</h3>
+          <p>Use a lab or compliance environment image to show Ontoligent is built for governed, high-stakes work.</p>
+          <ul>
+            <li>Best use: regulated-industry section</li>
+            <li>Visual cue: governed processes and evidence chains</li>
+            <li>Avoid: overly stylized futuristic assets</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="image-reco">
+        <div class="body">
+          <h3>Architecture diagram</h3>
+          <p>Use one branded diagram or schematic so the page feels designed, not assembled from stock alone.</p>
+          <svg viewBox="0 0 420 220" class="svg-frame" aria-label="Recommended knowledge graph diagram">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stop-color="#ff5c5c" />
+                <stop offset="100%" stop-color="#7de0bc" />
+              </linearGradient>
+            </defs>
+            <rect x="14" y="14" width="392" height="192" rx="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" />
+            <g stroke="url(#g1)" stroke-width="2" opacity="0.78">
+              <line x1="90" y1="62" x2="205" y2="110" />
+              <line x1="90" y1="158" x2="205" y2="110" />
+              <line x1="320" y1="62" x2="205" y2="110" />
+              <line x1="320" y1="158" x2="205" y2="110" />
+              <line x1="205" y1="110" x2="205" y2="42" />
+              <line x1="205" y1="110" x2="205" y2="178" />
+            </g>
+            <g fill="#0c1a2d" stroke="rgba(255,255,255,0.18)">
+              <circle cx="90" cy="62" r="18" />
+              <circle cx="90" cy="158" r="18" />
+              <circle cx="320" cy="62" r="18" />
+              <circle cx="320" cy="158" r="18" />
+              <circle cx="205" cy="110" r="24" />
+            </g>
+            <g fill="#f5f7fb" font-family="Montserrat, sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+              <text x="90" y="66">Data</text>
+              <text x="90" y="162">Policy</text>
+              <text x="320" y="66">Teams</text>
+              <text x="320" y="162">Systems</text>
+              <text x="205" y="114">Meaning</text>
+            </g>
+          </svg>
+          <p class="footer-note" style="margin-top:12px;">Use this as the visual anchor for Ontoligent if you want one branded, explainable schematic on the page.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head center">
+      <span class="eyebrow">Value</span>
+      <h2>Executives respond to fewer risks, faster deployment, and measurable trust.</h2>
+    </div>
+
+    <div class="metrics" aria-label="Value metrics">
+      <article class="panel" style="padding:20px;"><strong>Fewer blind spots</strong><p>Shared definitions reduce drift across teams and systems.</p></article>
+      <article class="panel" style="padding:20px;"><strong>Faster adoption</strong><p>Architecture Studio shortens the path from idea to production.</p></article>
+      <article class="panel" style="padding:20px;"><strong>Safer automation</strong><p>Audit, approval, and replay make actioning AI defensible.</p></article>
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="foot-cta">
+      <span class="eyebrow">Positioning recommendation</span>
+      <h2>Keep this as a standalone product brief, not a generic redirect page.</h2>
+      <p>For business standards, a flagship product should have a dedicated page with a clear narrative, architecture flow, use-case proof, and recommended imagery. That gives enterprise buyers a fast scan path and keeps the site aligned with how serious vendors present products.</p>
+      <div class="hero-actions">
+        <a class="button" href="https://ontoligent.io/" target="_blank" rel="noreferrer">Open Ontoligent</a>
+        <a class="button-secondary" href="https://ontoligent.io/welcome" target="_blank" rel="noreferrer">Read the main product narrative</a>
+      </div>
+      <div class="footer-links">
+        <a href="#problem">Summary</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#imagery">Imagery</a>
+        <a href="#capabilities">Capabilities</a>
+      </div>
+      <p class="footer-note">Recommended final asset set: a hero executive photo, one architecture diagram, one operational workflow visual, and one regulated-industry support image.</p>
+    </div>
+  </section>
+</main>
 </body>
 </html>

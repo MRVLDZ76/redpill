@@ -28,6 +28,7 @@ type AppContent = {
   nav: {
     approach: string
     services: string
+    ontoligent: string
     insights: string
     contact: string
     sendMessage: string
@@ -89,6 +90,16 @@ type AppContent = {
     eyebrow: string
     title: string
     paragraphs: string[]
+  }
+  ontoligent: {
+    eyebrow: string
+    title: string
+    intro: string
+    detail: string
+    ctaPrimary: string
+    ctaSecondary: string
+    highlights: Array<{ title: string; text: string }>
+    stats: Array<{ value: string; label: string }>
   }
   insights: {
     eyebrow: string
@@ -156,6 +167,7 @@ export const appCopy: Record<Locale, AppContent> = {
     nav: {
       approach: 'Approach',
       services: 'Services',
+      ontoligent: 'Ontoligent',
       insights: 'Insights',
       contact: 'Contact',
       sendMessage: 'Send a Message',
@@ -292,6 +304,35 @@ export const appCopy: Record<Locale, AppContent> = {
         'Taking the red pill means recognizing that AI is not the foundation. Knowledge is.',
       ],
     },
+    ontoligent: {
+      eyebrow: 'Flagship product',
+      title: 'Ontoligent turns enterprise knowledge into a governed operating system.',
+      intro:
+        'A product for teams that need ontology-as-code, hybrid retrieval, auditable agents, and runtime decisions they can defend.',
+      detail:
+        'It brings Architecture Studio, auto-routed retrieval, closed-loop actions, and budget-aware governance into one enterprise knowledge stack.',
+      ctaPrimary: 'Explore Ontoligent',
+      ctaSecondary: 'Read the executive brief',
+      highlights: [
+        {
+          title: 'Architecture Studio',
+          text: 'Describe the business problem and Ontoligent recommends the ontology, retrieval, agents, and governance needed to deploy it.',
+        },
+        {
+          title: 'Visible runtime behavior',
+          text: 'Every answer, tool call, and writeback carries traceability, citations, and replayable lineage.',
+        },
+        {
+          title: 'Domain packs',
+          text: 'Vertical bundles for regulated work with model, workflow, and governance patterns ready to install.',
+        },
+      ],
+      stats: [
+        { value: '1 kernel', label: 'ontology, retrieval, agents, and governance in one system' },
+        { value: '6 surfaces', label: 'Architecture Studio through governance and budget controls' },
+        { value: 'Full audit trail', label: 'lineage, replay, permissions, and cost visibility by design' },
+      ],
+    },
     insights: {
       eyebrow: 'Featured insights',
       title: 'Thought leadership for data, AI, and enterprise architecture teams.',
@@ -347,7 +388,7 @@ export const appCopy: Record<Locale, AppContent> = {
     footer: {
       tagline: 'Knowledge Before AI.',
       address: ['7901 4TH ST N, STE 300', 'ST. PETERSBURG, FL 33702 - USA' ],
-      links: ['Approach', 'Services', 'Insights', 'Contact', 'LinkedIn'],
+      links: ['Approach', 'Services', 'Ontoligent', 'Use Cases', 'Insights', 'Contact', 'LinkedIn'],
     },
   },
   fr: {
@@ -359,6 +400,7 @@ export const appCopy: Record<Locale, AppContent> = {
     nav: {
       approach: 'Approche',
       services: 'Services',
+      ontoligent: 'Ontoligent',
       insights: 'Analyses',
       contact: 'Contact',
       sendMessage: 'Envoyer un message',
@@ -495,6 +537,35 @@ export const appCopy: Record<Locale, AppContent> = {
         'Prendre la pilule rouge, c\'est reconnaître que l\'IA n\'est pas la fondation. La connaissance l\'est.',
       ],
     },
+    ontoligent: {
+      eyebrow: 'Produit phare',
+      title: 'Ontoligent transforme la connaissance d\'entreprise en système d\'exploitation gouverné.',
+      intro:
+        'Un produit pour les équipes qui ont besoin d\'ontology-as-code, de retrieval hybride, d\'agents auditables et de décisions traçables.',
+      detail:
+        'Il réunit Architecture Studio, retrieval auto-routé, actions en boucle fermée et gouvernance budgétaire dans une seule pile de connaissance d\'entreprise.',
+      ctaPrimary: 'Découvrir Ontoligent',
+      ctaSecondary: 'Lire le brief exécutif',
+      highlights: [
+        {
+          title: 'Architecture Studio',
+          text: 'Décrivez le problème métier et Ontoligent recommande l\'ontologie, le retrieval, les agents et la gouvernance nécessaires pour le déployer.',
+        },
+        {
+          title: 'Comportement runtime visible',
+          text: 'Chaque réponse, appel d\'outil et writeback porte une traçabilité, des citations et une lignée rejouable.',
+        },
+        {
+          title: 'Domain packs',
+          text: 'Des bundles verticaux pour le travail réglementé avec des modèles, workflows et garde-fous prêts à installer.',
+        },
+      ],
+      stats: [
+        { value: '1 kernel', label: 'ontologie, retrieval, agents et gouvernance dans un seul système' },
+        { value: '6 surfaces', label: 'Architecture Studio jusqu\'aux contrôles de gouvernance et budget' },
+        { value: 'Ligne de conduite complète', label: 'lignage, replay, permissions et visibilité des coûts par design' },
+      ],
+    },
     insights: {
       eyebrow: 'Analyses à la une',
       title: 'Une pensée de haut niveau pour les équipes data, IA et architecture d\'entreprise.',
@@ -550,7 +621,7 @@ export const appCopy: Record<Locale, AppContent> = {
     footer: {
       tagline: 'La connaissance avant l\'IA.',
       address: ['7901 4TH ST N, STE 300', 'ST. PETERSBURG, FL 33702 - USA' ],
-      links: ['Approche', 'Services', 'Analyses', 'Contact', 'LinkedIn'],
+      links: ['Approche', 'Services', 'Ontoligent', 'Cas d\'usage', 'Analyses', 'Contact', 'LinkedIn'],
     },
   },
   es: {
@@ -562,6 +633,7 @@ export const appCopy: Record<Locale, AppContent> = {
     nav: {
       approach: 'Enfoque',
       services: 'Servicios',
+      ontoligent: 'Ontoligent',
       insights: 'Ideas',
       contact: 'Contacto',
       sendMessage: 'Enviar mensaje',
@@ -698,6 +770,35 @@ export const appCopy: Record<Locale, AppContent> = {
         'Tomar la píldora roja significa reconocer que la IA no es la base. El conocimiento sí lo es.',
       ],
     },
+    ontoligent: {
+      eyebrow: 'Producto insignia',
+      title: 'Ontoligent convierte el conocimiento empresarial en un sistema operativo gobernado.',
+      intro:
+        'Un producto para equipos que necesitan ontology-as-code, recuperación híbrida, agentes auditables y decisiones en tiempo de ejecución que puedan defender.',
+      detail:
+        'Reúne Architecture Studio, recuperación auto-ruteada, acciones en ciclo cerrado y gobernanza de presupuesto en una sola pila de conocimiento empresarial.',
+      ctaPrimary: 'Explorar Ontoligent',
+      ctaSecondary: 'Leer el brief ejecutivo',
+      highlights: [
+        {
+          title: 'Architecture Studio',
+          text: 'Describe el problema de negocio y Ontoligent recomienda la ontología, la recuperación, los agentes y la gobernanza necesarios para desplegarlo.',
+        },
+        {
+          title: 'Comportamiento en runtime visible',
+          text: 'Cada respuesta, llamada de herramienta y writeback incluye trazabilidad, citas y una línea de ejecución reproducible.',
+        },
+        {
+          title: 'Domain packs',
+          text: 'Paquetes verticales para trabajo regulado con patrones de modelo, workflow y gobernanza listos para instalar.',
+        },
+      ],
+      stats: [
+        { value: '1 kernel', label: 'ontología, recuperación, agentes y gobernanza en un solo sistema' },
+        { value: '6 superficies', label: 'desde Architecture Studio hasta los controles de gobernanza y presupuesto' },
+        { value: 'Trazabilidad total', label: 'linaje, replay, permisos y visibilidad de costes por diseño' },
+      ],
+    },
     insights: {
       eyebrow: 'Ideas destacadas',
       title: 'Liderazgo de pensamiento para equipos de datos, IA y arquitectura empresarial.',
@@ -753,7 +854,7 @@ export const appCopy: Record<Locale, AppContent> = {
     footer: {
       tagline: 'Conocimiento antes que IA.',
       address: ['7901 4TH ST N, STE 300', 'ST. PETERSBURG, FL 33702 - USA' ],
-      links: ['Enfoque', 'Servicios', 'Ideas', 'Contacto', 'LinkedIn'],
+      links: ['Enfoque', 'Servicios', 'Ontoligent', 'Casos de uso', 'Ideas', 'Contacto', 'LinkedIn'],
     },
   },
 }

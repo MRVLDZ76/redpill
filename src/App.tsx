@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import emailjs from '@emailjs/browser'
 import {
+  ArrowUpRight,
   X,
   Menu,
   Moon,
@@ -327,6 +328,7 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
         <nav className="site-nav site-nav-desktop" aria-label="Primary links">
           <a href="#approach">{copy.nav.approach}</a>
           <a href="#services">{copy.nav.services}</a>
+          <a href="#ontoligent">{copy.nav.ontoligent}</a>
           <a href="/use-cases">Use Cases</a>
           <a href="#insights">{copy.nav.insights}</a>
           <a href="#contact">{copy.nav.contact}</a>
@@ -398,6 +400,7 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
           <div className="mobile-nav-panel" aria-label="Mobile navigation">
             <a href="#approach" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.approach}</a>
             <a href="#services" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.services}</a>
+            <a href="#ontoligent" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.ontoligent}</a>
             <a href="/use-cases" onClick={() => setIsMobileNavOpen(false)}>Use Cases</a>
             <a href="#insights" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.insights}</a>
             <a href="#contact" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.contact}</a>
@@ -431,6 +434,67 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
 
         <div className="hero-visual">
           <KnowledgeGraph locale={locale} />
+        </div>
+      </section>
+
+      <section className="ontoligent-section section-shell" id="ontoligent" aria-labelledby="ontoligent-title">
+        <div className="ontoligent-panel">
+          <div className="ontoligent-copy">
+            <span className="eyebrow">{copy.ontoligent.eyebrow}</span>
+            <h2 id="ontoligent-title">{copy.ontoligent.title}</h2>
+            <p className="ontoligent-intro">{copy.ontoligent.intro}</p>
+            <p className="ontoligent-detail">{copy.ontoligent.detail}</p>
+
+            <div className="ontoligent-actions">
+              <a className="primary-cta" {...getLinkProps('https://ontoligent.io')}>
+                <span>{copy.ontoligent.ctaPrimary}</span>
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+              <a className="secondary-cta" {...getLinkProps('/logos/Ontoligent_Executive_Brief.html')}>
+                {copy.ontoligent.ctaSecondary}
+              </a>
+            </div>
+
+            <div className="ontoligent-highlights" aria-label="Ontoligent product highlights">
+              {copy.ontoligent.highlights.map((highlight) => (
+                <article key={highlight.title} className="ontoligent-highlight-card">
+                  <span className="ontoligent-highlight-kicker">{highlight.title}</span>
+                  <p>{highlight.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <aside className="ontoligent-visual" aria-label="Ontoligent architecture summary">
+            <div className="ontoligent-visual-topline">
+              <span>Enterprise Knowledge Operating System</span>
+              <strong>Ontology-as-code, retrieval, agents, and governance in one control plane.</strong>
+            </div>
+
+            <div className="ontoligent-stat-grid" aria-label="Product signal metrics">
+              {copy.ontoligent.stats.map((stat) => (
+                <article key={stat.value} className="ontoligent-stat-card">
+                  <strong>{stat.value}</strong>
+                  <span>{stat.label}</span>
+                </article>
+              ))}
+            </div>
+
+            <div className="ontoligent-stack" aria-label="Capability stack">
+              <div>
+                <span>Architecture Studio</span>
+                <p>Solution-architect copilot for selecting ontology, retrieval, agents, and governance.</p>
+              </div>
+              <div>
+                <span>Execution Proof</span>
+                <p>Visible runtime behavior with lineage, citations, replay, and cost controls.</p>
+              </div>
+              <div>
+                <span>Domain Packs</span>
+                <p>Vertical bundles for regulated enterprise workflows ready for deployment.</p>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -771,10 +835,11 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
         <div className="footer-links">
           <a href="#approach">{copy.footer.links[0]}</a>
           <a href="#services">{copy.footer.links[1]}</a>
-          <a href="/use-cases">Use Cases</a>
-          <a href="#insights">{copy.footer.links[2]}</a>
-          <a href="#contact">{copy.footer.links[3]}</a>
-          <a {...getLinkProps(LINKEDIN_URL)}>{copy.footer.links[4]}</a>
+          <a href="#ontoligent">{copy.footer.links[2]}</a>
+          <a href="/use-cases">{copy.footer.links[3]}</a>
+          <a href="#insights">{copy.footer.links[4]}</a>
+          <a href="#contact">{copy.footer.links[5]}</a>
+          <a {...getLinkProps(LINKEDIN_URL)}>{copy.footer.links[6]}</a>
         </div>
 
         <div>
