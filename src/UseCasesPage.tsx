@@ -326,6 +326,8 @@ function UseCasesPage() {
           <a href="#financial-use-case">Financial</a>
           <a href="/#contact">Contact</a>
           <a {...getLinkProps(LINKEDIN_URL)}>LinkedIn</a>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/terms-and-conditions">Terms & Conditions</a>
         </div>
 
         <div>

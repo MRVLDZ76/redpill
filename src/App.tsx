@@ -841,6 +841,8 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
           <a href="#insights">{copy.footer.links[4]}</a>
           <a href="#contact">{copy.footer.links[5]}</a>
           <a {...getLinkProps(LINKEDIN_URL)}>{copy.footer.links[6]}</a>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/terms-and-conditions">Terms & Conditions</a>
         </div>
 
         <div>
