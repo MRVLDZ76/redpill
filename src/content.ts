@@ -253,7 +253,7 @@ export const appCopy: Record<Locale, AppContent> = {
       },
     },
     services: {
-      eyebrow: 'Services',
+      eyebrow: 'Consulting Services',
       title: 'Consulting capabilities built for enterprise-scale transformation programs.',
       labels: {
         problem: 'Problem',
@@ -297,18 +297,18 @@ export const appCopy: Record<Locale, AppContent> = {
       ],
     },
     redPill: {
-      eyebrow: 'The Red Pill',
-      title: 'The AI industry is focused on models. We focus on understanding.',
+      eyebrow: 'The Red Pill — Knowledge Before AI™',
+      title: 'One methodology, delivered through consulting, implementation, and a platform.',
       paragraphs: [
-        'Most AI failures originate from fragmented knowledge, disconnected systems, inconsistent terminology, and poor information architecture.',
+        'Most organizations are trying to deploy AI. We help them build the knowledge architecture that AI depends on. Through consulting, implementation, and the Ontoligent platform, we turn fragmented information into enterprise intelligence.',
         'Taking the red pill means recognizing that AI is not the foundation. Knowledge is.',
       ],
     },
     ontoligent: {
-      eyebrow: 'Flagship product',
-      title: 'Ontoligent turns enterprise knowledge into a governed operating system.',
+      eyebrow: 'Powered by Ontoligent',
+      title: 'The platform that operationalizes Knowledge Before AI.',
       intro:
-        'A product for teams that need ontology-as-code, hybrid retrieval, auditable agents, and runtime decisions they can defend.',
+        'Ontoligent turns the knowledge architecture we design with you into a governed operating system — ontology-as-code, hybrid retrieval, auditable agents, and runtime decisions you can defend.',
       detail:
         'It brings Architecture Studio, auto-routed retrieval, closed-loop actions, and budget-aware governance into one enterprise knowledge stack.',
       ctaPrimary: 'Explore Ontoligent',
@@ -486,7 +486,7 @@ export const appCopy: Record<Locale, AppContent> = {
       },
     },
     services: {
-      eyebrow: 'Services',
+      eyebrow: 'Services de conseil',
       title: 'Des capacités de conseil conçues pour des programmes de transformation à l\'échelle de l\'entreprise.',
       labels: {
         problem: 'Problème',
@@ -530,18 +530,18 @@ export const appCopy: Record<Locale, AppContent> = {
       ],
     },
     redPill: {
-      eyebrow: 'La pilule rouge',
-      title: 'L\'industrie de l\'IA se concentre sur les modèles. Nous nous concentrons sur la compréhension.',
+      eyebrow: 'La pilule rouge — La connaissance avant l\'IA™',
+      title: 'Une seule méthodologie : conseil, implémentation et une plateforme qui l\'incarne.',
       paragraphs: [
-        'La plupart des échecs IA proviennent d\'une connaissance fragmentée, de systèmes déconnectés, d\'une terminologie incohérente et d\'une mauvaise architecture de l\'information.',
+        'La plupart des organisations cherchent à déployer l\'IA. Nous les aidons à bâtir l\'architecture de connaissance dont l\'IA dépend. Par le conseil, l\'implémentation et la plateforme Ontoligent, nous transformons l\'information fragmentée en intelligence d\'entreprise.',
         'Prendre la pilule rouge, c\'est reconnaître que l\'IA n\'est pas la fondation. La connaissance l\'est.',
       ],
     },
     ontoligent: {
-      eyebrow: 'Produit phare',
-      title: 'Ontoligent transforme la connaissance d\'entreprise en système d\'exploitation gouverné.',
+      eyebrow: 'Propulsé par Ontoligent',
+      title: 'La plateforme qui opérationnalise « La connaissance avant l\'IA ».',
       intro:
-        'Un produit pour les équipes qui ont besoin d\'ontology-as-code, de retrieval hybride, d\'agents auditables et de décisions traçables.',
+        'Ontoligent transforme l\'architecture de connaissance que nous concevons avec vous en un système d\'exploitation gouverné — ontology-as-code, retrieval hybride, agents auditables et décisions traçables.',
       detail:
         'Il réunit Architecture Studio, retrieval auto-routé, actions en boucle fermée et gouvernance budgétaire dans une seule pile de connaissance d\'entreprise.',
       ctaPrimary: 'Découvrir Ontoligent',
@@ -719,7 +719,7 @@ export const appCopy: Record<Locale, AppContent> = {
       },
     },
     services: {
-      eyebrow: 'Servicios',
+      eyebrow: 'Servicios de consultoría',
       title: 'Capacidades de consultoría diseñadas para programas de transformación a escala empresarial.',
       labels: {
         problem: 'Problema',
@@ -763,18 +763,18 @@ export const appCopy: Record<Locale, AppContent> = {
       ],
     },
     redPill: {
-      eyebrow: 'La píldora roja',
-      title: 'La industria de la IA se enfoca en los modelos. Nosotros nos enfocamos en la comprensión.',
+      eyebrow: 'La píldora roja — Conocimiento antes que IA™',
+      title: 'Una sola metodología: consultoría, implementación y una plataforma que la encarna.',
       paragraphs: [
-        'La mayoría de los fallos de IA provienen de conocimiento fragmentado, sistemas desconectados, terminología inconsistente y mala arquitectura de información.',
+        'La mayoría de las organizaciones intentan desplegar IA. Las ayudamos a construir la arquitectura de conocimiento de la que depende la IA. Mediante consultoría, implementación y la plataforma Ontoligent, convertimos información fragmentada en inteligencia empresarial.',
         'Tomar la píldora roja significa reconocer que la IA no es la base. El conocimiento sí lo es.',
       ],
     },
     ontoligent: {
-      eyebrow: 'Producto insignia',
-      title: 'Ontoligent convierte el conocimiento empresarial en un sistema operativo gobernado.',
+      eyebrow: 'Impulsado por Ontoligent',
+      title: 'La plataforma que operacionaliza «Conocimiento antes que IA».',
       intro:
-        'Un producto para equipos que necesitan ontology-as-code, recuperación híbrida, agentes auditables y decisiones en tiempo de ejecución que puedan defender.',
+        'Ontoligent convierte la arquitectura de conocimiento que diseñamos contigo en un sistema operativo gobernado: ontology-as-code, recuperación híbrida, agentes auditables y decisiones que puedes defender.',
       detail:
         'Reúne Architecture Studio, recuperación auto-ruteada, acciones en ciclo cerrado y gobernanza de presupuesto en una sola pila de conocimiento empresarial.',
       ctaPrimary: 'Explorar Ontoligent',

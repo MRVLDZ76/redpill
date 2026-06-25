@@ -438,67 +438,6 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
         </div>
       </section>
 
-      <section className="ontoligent-section section-shell" id="ontoligent" aria-labelledby="ontoligent-title">
-        <div className="ontoligent-panel">
-          <div className="ontoligent-copy">
-            <span className="eyebrow">{copy.ontoligent.eyebrow}</span>
-            <h2 id="ontoligent-title">{copy.ontoligent.title}</h2>
-            <p className="ontoligent-intro">{copy.ontoligent.intro}</p>
-            <p className="ontoligent-detail">{copy.ontoligent.detail}</p>
-
-            <div className="ontoligent-actions">
-              <a className="primary-cta" {...getLinkProps('https://ontoligent.io')}>
-                <span>{copy.ontoligent.ctaPrimary}</span>
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </a>
-              <a className="secondary-cta" {...getLinkProps('/briefs/ontoligent-executive-brief.html')}>
-                {copy.ontoligent.ctaSecondary}
-              </a>
-            </div>
-
-            <div className="ontoligent-highlights" aria-label="Ontoligent product highlights">
-              {copy.ontoligent.highlights.map((highlight) => (
-                <article key={highlight.title} className="ontoligent-highlight-card">
-                  <span className="ontoligent-highlight-kicker">{highlight.title}</span>
-                  <p>{highlight.text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <aside className="ontoligent-visual" aria-label="Ontoligent architecture summary">
-            <div className="ontoligent-visual-topline">
-              <span>Enterprise Knowledge Operating System</span>
-              <strong>Ontology-as-code, retrieval, agents, and governance in one control plane.</strong>
-            </div>
-
-            <div className="ontoligent-stat-grid" aria-label="Product signal metrics">
-              {copy.ontoligent.stats.map((stat) => (
-                <article key={stat.value} className="ontoligent-stat-card">
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </article>
-              ))}
-            </div>
-
-            <div className="ontoligent-stack" aria-label="Capability stack">
-              <div>
-                <span>Architecture Studio</span>
-                <p>Solution-architect copilot for selecting ontology, retrieval, agents, and governance.</p>
-              </div>
-              <div>
-                <span>Execution Proof</span>
-                <p>Visible runtime behavior with lineage, citations, replay, and cost controls.</p>
-              </div>
-              <div>
-                <span>Domain Packs</span>
-                <p>Vertical bundles for regulated enterprise workflows ready for deployment.</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </section>
-
       <section className="clients-section section-shell" aria-labelledby="clients-title">
         <div className="clients-wrap">
           <div className="clients-copy">
@@ -661,6 +600,67 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
               </article>
             )
           })}
+        </div>
+      </section>
+
+      <section className="ontoligent-section section-shell" id="ontoligent" aria-labelledby="ontoligent-title">
+        <div className="ontoligent-panel">
+          <div className="ontoligent-copy">
+            <span className="eyebrow">{copy.ontoligent.eyebrow}</span>
+            <h2 id="ontoligent-title">{copy.ontoligent.title}</h2>
+            <p className="ontoligent-intro">{copy.ontoligent.intro}</p>
+            <p className="ontoligent-detail">{copy.ontoligent.detail}</p>
+
+            <div className="ontoligent-actions">
+              <a className="primary-cta" {...getLinkProps('https://ontoligent.io')}>
+                <span>{copy.ontoligent.ctaPrimary}</span>
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+              <a className="secondary-cta" {...getLinkProps('/briefs/ontoligent-executive-brief.html')}>
+                {copy.ontoligent.ctaSecondary}
+              </a>
+            </div>
+
+            <div className="ontoligent-highlights" aria-label="Ontoligent product highlights">
+              {copy.ontoligent.highlights.map((highlight) => (
+                <article key={highlight.title} className="ontoligent-highlight-card">
+                  <span className="ontoligent-highlight-kicker">{highlight.title}</span>
+                  <p>{highlight.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <aside className="ontoligent-visual" aria-label="Ontoligent architecture summary">
+            <div className="ontoligent-visual-topline">
+              <span>Enterprise Knowledge Operating System</span>
+              <strong>Ontology-as-code, retrieval, agents, and governance in one control plane.</strong>
+            </div>
+
+            <div className="ontoligent-stat-grid" aria-label="Product signal metrics">
+              {copy.ontoligent.stats.map((stat) => (
+                <article key={stat.value} className="ontoligent-stat-card">
+                  <strong>{stat.value}</strong>
+                  <span>{stat.label}</span>
+                </article>
+              ))}
+            </div>
+
+            <div className="ontoligent-stack" aria-label="Capability stack">
+              <div>
+                <span>Architecture Studio</span>
+                <p>Solution-architect copilot for selecting ontology, retrieval, agents, and governance.</p>
+              </div>
+              <div>
+                <span>Execution Proof</span>
+                <p>Visible runtime behavior with lineage, citations, replay, and cost controls.</p>
+              </div>
+              <div>
+                <span>Domain Packs</span>
+                <p>Vertical bundles for regulated enterprise workflows ready for deployment.</p>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
 
