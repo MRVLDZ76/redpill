@@ -384,7 +384,7 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
           <a href="#approach">{copy.nav.approach}</a>
           <a href="#services">{copy.nav.services}</a>
           <a href="#ontoligent">{copy.nav.ontoligent}</a>
-          <a href="/use-cases">Use Cases</a>
+          <a href="https://api.ontoligent.io/showcase/" target="_blank" rel="noopener noreferrer">Use Cases</a>
           <a href="#insights">{copy.nav.insights}</a>
           <a href="#contact">{copy.nav.contact}</a>
         </nav>
@@ -456,7 +456,7 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
             <a href="#approach" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.approach}</a>
             <a href="#services" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.services}</a>
             <a href="#ontoligent" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.ontoligent}</a>
-            <a href="/use-cases" onClick={() => setIsMobileNavOpen(false)}>Use Cases</a>
+            <a href="https://api.ontoligent.io/showcase/" target="_blank" rel="noopener noreferrer" onClick={() => setIsMobileNavOpen(false)}>Use Cases</a>
             <a href="#insights" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.insights}</a>
             <a href="#contact" onClick={() => setIsMobileNavOpen(false)}>{copy.nav.contact}</a>
           </div>
