@@ -507,46 +507,59 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
           </div>
 
           <aside className="gap-visual" aria-hidden="true">
-            <div className="gap-visual-orbit" />
-            <div className="gap-visual-grid" />
-            <div className="gap-stage gap-stage-experimental">
-              <div className="gap-stage-topline">
-                <span>{copy.gap.nodes.experimental}</span>
-                <strong>{locale === 'fr' ? 'Modèles expérimentaux' : locale === 'es' ? 'Modelos experimentales' : 'Experimental models'}</strong>
-              </div>
-              <p>{locale === 'fr' ? 'Sorties imprévisibles, contexte pauvre, confiance faible.' : locale === 'es' ? 'Resultados impredecibles, contexto débil, poca confianza.' : 'Unstable outputs, thin context, low trust.'}</p>
-              <div className="gap-stage-meter">
-                <i />
-              </div>
+            <div className="gap-diagram-head">
+              <span>{locale === 'fr' ? 'Trajectoire de maturité' : locale === 'es' ? 'Trayectoria de madurez' : 'Maturity path'}</span>
+              <strong>{locale === 'fr' ? 'Du pilote à la production' : locale === 'es' ? 'Del piloto a la producción' : 'From pilot to production'}</strong>
             </div>
 
-            <div className="gap-stage gap-stage-foundation">
-              <div className="gap-stage-topline">
-                <span>{copy.gap.nodes.foundation}</span>
-                <strong>{locale === 'fr' ? 'Fondation sémantique' : locale === 'es' ? 'Base semántica' : 'Semantic foundation'}</strong>
-              </div>
-              <p>{locale === 'fr' ? 'Ontologies, graphes et gouvernance relient le sens du métier.' : locale === 'es' ? 'Ontologías, grafos y gobernanza conectan el significado del negocio.' : 'Ontologies, graphs, and governance connect business meaning.'}</p>
-              <div className="gap-stage-bridge">
-                <span className="bridge-segment bridge-segment-one" />
-                <span className="bridge-segment bridge-segment-two" />
-                <span className="bridge-segment bridge-segment-three" />
-              </div>
-            </div>
+            <ol className="gap-track">
+              <li className="gap-node gap-node-experimental">
+                <span className="gap-node-marker">01</span>
+                <div className="gap-node-body">
+                  <span className="gap-node-kicker">{copy.gap.nodes.experimental}</span>
+                  <strong>{locale === 'fr' ? 'Modèles expérimentaux' : locale === 'es' ? 'Modelos experimentales' : 'Experimental models'}</strong>
+                  <p>{locale === 'fr' ? 'Sorties imprévisibles, contexte pauvre, confiance faible.' : locale === 'es' ? 'Resultados impredecibles, contexto débil, poca confianza.' : 'Unstable outputs, thin context, low trust.'}</p>
+                  <div className="gap-node-metric">
+                    <span>{locale === 'fr' ? 'Fiabilité' : locale === 'es' ? 'Fiabilidad' : 'Reliability'}</span>
+                    <span className="gap-metric-bar"><i /></span>
+                    <em className="gap-metric-value">{locale === 'fr' ? 'Faible' : locale === 'es' ? 'Baja' : 'Low'}</em>
+                  </div>
+                </div>
+              </li>
 
-            <div className="gap-stage gap-stage-enterprise">
-              <div className="gap-stage-topline">
-                <span>{copy.gap.nodes.enterprise}</span>
-                <strong>{locale === 'fr' ? 'Résultat entreprise' : locale === 'es' ? 'Resultado empresarial' : 'Enterprise outcome'}</strong>
-              </div>
-              <p>{locale === 'fr' ? 'Réponses fiables, traçables et utilisables à grande échelle.' : locale === 'es' ? 'Respuestas fiables, trazables y utilizables a escala.' : 'Reliable, traceable, scalable answers.'}</p>
-              <div className="gap-stage-pillrow">
-                <span>{locale === 'fr' ? 'Confiance' : locale === 'es' ? 'Confianza' : 'Trust'}</span>
-                <span>{locale === 'fr' ? 'Traçabilité' : locale === 'es' ? 'Trazabilidad' : 'Traceability'}</span>
-                <span>{locale === 'fr' ? 'Échelle' : locale === 'es' ? 'Escala' : 'Scale'}</span>
-              </div>
-            </div>
+              <li className="gap-node gap-node-foundation">
+                <span className="gap-node-marker">02</span>
+                <div className="gap-node-body">
+                  <span className="gap-node-kicker">{copy.gap.nodes.foundation}</span>
+                  <strong>{locale === 'fr' ? 'Fondation sémantique' : locale === 'es' ? 'Base semántica' : 'Semantic foundation'}</strong>
+                  <p>{locale === 'fr' ? 'Ontologies, graphes et gouvernance relient le sens du métier.' : locale === 'es' ? 'Ontologías, grafos y gobernanza conectan el significado del negocio.' : 'Ontologies, graphs, and governance connect business meaning.'}</p>
+                  <div className="gap-node-metric">
+                    <span>{locale === 'fr' ? 'Fiabilité' : locale === 'es' ? 'Fiabilidad' : 'Reliability'}</span>
+                    <span className="gap-metric-bar"><i /></span>
+                    <em className="gap-metric-value">{locale === 'fr' ? 'En hausse' : locale === 'es' ? 'En alza' : 'Rising'}</em>
+                  </div>
+                </div>
+              </li>
 
-            <div className="gap-connector" />
+              <li className="gap-node gap-node-enterprise">
+                <span className="gap-node-marker">03</span>
+                <div className="gap-node-body">
+                  <span className="gap-node-kicker">{copy.gap.nodes.enterprise}</span>
+                  <strong>{locale === 'fr' ? 'Résultat entreprise' : locale === 'es' ? 'Resultado empresarial' : 'Enterprise outcome'}</strong>
+                  <p>{locale === 'fr' ? 'Réponses fiables, traçables et utilisables à grande échelle.' : locale === 'es' ? 'Respuestas fiables, trazables y utilizables a escala.' : 'Reliable, traceable, scalable answers.'}</p>
+                  <div className="gap-node-metric">
+                    <span>{locale === 'fr' ? 'Fiabilité' : locale === 'es' ? 'Fiabilidad' : 'Reliability'}</span>
+                    <span className="gap-metric-bar"><i /></span>
+                    <em className="gap-metric-value">{locale === 'fr' ? 'Élevée' : locale === 'es' ? 'Alta' : 'High'}</em>
+                  </div>
+                  <div className="gap-node-pills">
+                    <span>{locale === 'fr' ? 'Confiance' : locale === 'es' ? 'Confianza' : 'Trust'}</span>
+                    <span>{locale === 'fr' ? 'Traçabilité' : locale === 'es' ? 'Trazabilidad' : 'Traceability'}</span>
+                    <span>{locale === 'fr' ? 'Échelle' : locale === 'es' ? 'Escala' : 'Scale'}</span>
+                  </div>
+                </div>
+              </li>
+            </ol>
           </aside>
         </div>
       </section>
