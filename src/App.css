@@ -1151,125 +1151,318 @@
   letter-spacing: -0.01em;
 }
 
-.gap-track {
+.gap-stack-scene {
   position: relative;
-  list-style: none;
-  margin: 0;
-  padding: 8px 26px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 296px;
+  border-bottom: 1px solid var(--line-soft);
+  background: radial-gradient(85% 70% at 50% 46%, color-mix(in srgb, var(--text) 3%, transparent), transparent 76%);
+  overflow: hidden;
 }
 
-.gap-track::before {
+.gap-stack {
+  position: relative;
+  width: 184px;
+  height: 184px;
+}
+
+.gap-layer {
+  position: absolute;
+  inset: 0;
+  transition: translate 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation: gap-layer-float 7.5s ease-in-out infinite;
+}
+
+.gap-layer-experimental {
+  translate: 0 68px;
+  z-index: 1;
+}
+
+.gap-layer-foundation {
+  translate: 0 0;
+  z-index: 2;
+  animation-delay: 1.4s;
+}
+
+.gap-layer-enterprise {
+  translate: 0 -68px;
+  z-index: 3;
+  animation-delay: 2.8s;
+}
+
+.gap-layer-experimental.is-active {
+  translate: 0 60px;
+}
+
+.gap-layer-foundation.is-active {
+  translate: 0 -8px;
+}
+
+.gap-layer-enterprise.is-active {
+  translate: 0 -76px;
+}
+
+@keyframes gap-layer-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.gap-plate {
+  --plate-accent: var(--line);
+  --plate-glow: color-mix(in srgb, var(--text) 10%, transparent);
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  border: 1px solid var(--plate-accent);
+  transform: rotateX(58deg) rotateZ(-45deg);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface) 98%, transparent), color-mix(in srgb, var(--surface) 86%, transparent));
+  background-color: var(--bg);
+  box-shadow:
+    -7px 7px 0 -1px color-mix(in srgb, var(--text) 9%, var(--bg)),
+    -8px 8px 0 0 color-mix(in srgb, var(--text) 18%, transparent),
+    -20px 24px 36px var(--plate-glow);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.gap-plate::before {
   content: '';
   position: absolute;
-  top: 34px;
-  bottom: 44px;
-  left: 43px;
+  inset: 12px;
+  border-radius: 12px;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--line-soft) 85%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--line-soft) 85%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.55;
+  transition: opacity 0.5s ease;
+}
+
+.gap-plate::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--plate-dot, var(--muted));
+  box-shadow: 0 0 0 6px var(--plate-dot-halo, transparent);
+}
+
+.gap-plate i {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.gap-plate i::after {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.22) 50%, transparent 58%);
+  transform: translateX(-130%);
+}
+
+.gap-layer.is-active .gap-plate i::after {
+  animation: gap-plate-sheen 1.5s ease 0.2s;
+}
+
+@keyframes gap-plate-sheen {
+  to {
+    transform: translateX(130%);
+  }
+}
+
+.gap-layer-experimental .gap-plate {
+  --plate-accent: color-mix(in srgb, var(--red) 38%, var(--line));
+  --plate-dot: var(--red);
+  --plate-dot-halo: color-mix(in srgb, var(--red) 14%, transparent);
+}
+
+.gap-layer-foundation .gap-plate {
+  --plate-accent: color-mix(in srgb, var(--text) 34%, var(--line));
+  --plate-dot: var(--text);
+  --plate-dot-halo: color-mix(in srgb, var(--text) 10%, transparent);
+}
+
+.gap-layer-enterprise .gap-plate {
+  --plate-accent: color-mix(in srgb, var(--green) 45%, var(--line));
+  --plate-dot: var(--green);
+  --plate-dot-halo: color-mix(in srgb, var(--green) 14%, transparent);
+}
+
+.gap-layer-experimental.is-active .gap-plate {
+  --plate-glow: color-mix(in srgb, var(--red) 24%, transparent);
+  border-color: color-mix(in srgb, var(--red) 62%, var(--line));
+}
+
+.gap-layer-foundation.is-active .gap-plate {
+  --plate-glow: color-mix(in srgb, var(--text) 20%, transparent);
+  border-color: color-mix(in srgb, var(--text) 55%, var(--line));
+}
+
+.gap-layer-enterprise.is-active .gap-plate {
+  --plate-glow: color-mix(in srgb, var(--green) 26%, transparent);
+  border-color: color-mix(in srgb, var(--green) 65%, var(--line));
+}
+
+.gap-layer.is-active .gap-plate::before {
+  opacity: 0.85;
+}
+
+.gap-stack-axis {
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gap-stack-axis::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: 50%;
   width: 1px;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--red) 55%, transparent),
-    color-mix(in srgb, var(--line) 90%, transparent) 45%,
-    color-mix(in srgb, var(--green) 60%, transparent)
+    color-mix(in srgb, var(--green) 55%, transparent),
+    color-mix(in srgb, var(--line) 80%, transparent) 50%,
+    color-mix(in srgb, var(--red) 55%, transparent)
   );
 }
 
-.gap-node {
-  position: relative;
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr);
-  gap: 16px;
-  padding: 20px 0;
-}
-
-.gap-node + .gap-node {
-  border-top: 1px solid var(--line-soft);
-}
-
-.gap-node-marker {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--bg);
+.gap-stack-axis span {
   color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  font-variant-numeric: tabular-nums;
-}
-
-.gap-node-experimental .gap-node-marker {
-  border-color: color-mix(in srgb, var(--red) 45%, var(--line));
-  color: var(--red);
-}
-
-.gap-node-foundation .gap-node-marker {
-  border-color: var(--text);
-  background: var(--text);
-  color: var(--bg);
-}
-
-.gap-node-enterprise .gap-node-marker {
-  border-color: color-mix(in srgb, var(--green) 55%, var(--line));
-  color: var(--green);
-}
-
-.gap-node-body {
-  min-width: 0;
-  padding-top: 6px;
-}
-
-.gap-node-kicker {
-  display: block;
-  color: var(--muted);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.gap-node-body strong {
-  display: block;
-  margin-top: 4px;
-  color: var(--text);
-  font-size: 1.04rem;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-}
-
-.gap-node-body p {
-  margin: 8px 0 0;
-  max-width: none;
-  color: var(--muted);
-  font-size: 0.89rem;
-  line-height: 1.55;
-}
-
-.gap-node-metric {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.gap-node-metric > span:first-child {
-  color: var(--muted);
-  font-size: 0.66rem;
+  font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
+.gap-legend {
+  display: grid;
+  gap: 4px;
+  padding: 12px 16px 18px;
+}
+
+.gap-legend-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 74px;
+  gap: 14px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  opacity: 0.6;
+  transition: opacity 0.35s ease, background-color 0.35s ease, border-color 0.35s ease;
+}
+
+.gap-legend-row.is-active {
+  opacity: 1;
+  border-color: var(--line-soft);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+}
+
+.gap-legend-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.gap-row-experimental .gap-legend-marker {
+  border-color: color-mix(in srgb, var(--red) 45%, var(--line));
+  color: var(--red);
+}
+
+.gap-row-foundation .gap-legend-marker {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.gap-row-enterprise .gap-legend-marker {
+  border-color: color-mix(in srgb, var(--green) 55%, var(--line));
+  color: var(--green);
+}
+
+.gap-legend-body {
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.gap-legend-kicker {
+  display: block;
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gap-legend-body strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--text);
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.gap-legend-body p {
+  margin: 6px 0 0;
+  max-width: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.gap-legend-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.gap-legend-metric em {
+  color: var(--text);
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 .gap-metric-bar {
   position: relative;
-  height: 4px;
+  width: 100%;
+  height: 3px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--text) 8%, transparent);
   overflow: hidden;
@@ -1279,69 +1472,58 @@
   position: absolute;
   inset: 0 auto 0 0;
   border-radius: inherit;
+  transition: width 0.5s ease;
 }
 
-.gap-metric-value {
-  color: var(--text);
-  font-size: 0.74rem;
-  font-style: normal;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.gap-node-experimental .gap-metric-bar i {
+.gap-row-experimental .gap-metric-bar i {
   width: 22%;
   background: var(--red);
 }
 
-.gap-node-experimental .gap-metric-value {
+.gap-row-experimental .gap-legend-metric em {
   color: var(--red);
 }
 
-.gap-node-foundation .gap-metric-bar i {
+.gap-row-foundation .gap-metric-bar i {
   width: 58%;
   background: linear-gradient(90deg, var(--red), var(--green));
 }
 
-.gap-node-enterprise .gap-metric-bar i {
+.gap-row-enterprise .gap-metric-bar i {
   width: 92%;
   background: var(--green);
 }
 
-.gap-node-enterprise .gap-metric-value {
+.gap-row-enterprise .gap-legend-metric em {
   color: var(--green);
 }
 
-.gap-node-foundation {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--red) 4%, transparent),
-    transparent 70%
-  );
-  margin: 0 -26px;
-  padding-left: 26px;
-  padding-right: 26px;
-}
-
-.gap-node-foundation .gap-node-marker {
-  margin-left: 0;
-}
-
-.gap-node-pills {
+.gap-legend-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
-.gap-node-pills span {
-  padding: 4px 10px;
+.gap-legend-pills span {
+  padding: 3px 9px;
   border: 1px solid color-mix(in srgb, var(--green) 30%, var(--line-soft));
   border-radius: 999px;
   color: var(--text);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.04em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gap-layer {
+    animation: none;
+    transition: none;
+  }
+
+  .gap-layer.is-active .gap-plate i::after {
+    animation: none;
+  }
 }
 
 .gap-cta {
@@ -1805,30 +1987,66 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .gap-track {
-    padding: 4px 18px 18px;
-  }
-
-  .gap-track::before {
-    left: 35px;
-  }
-
   .gap-diagram-head {
     padding: 16px 18px 14px;
   }
 
-  .gap-node-foundation {
-    margin: 0 -18px;
-    padding-left: 18px;
-    padding-right: 18px;
+  .gap-stack-scene {
+    height: 232px;
   }
 
-  .gap-node-metric {
-    grid-template-columns: minmax(0, 1fr) auto;
+  .gap-stack {
+    width: 144px;
+    height: 144px;
   }
 
-  .gap-node-metric > span:first-child {
-    display: none;
+  .gap-layer-experimental {
+    translate: 0 54px;
+  }
+
+  .gap-layer-enterprise {
+    translate: 0 -54px;
+  }
+
+  .gap-layer-experimental.is-active {
+    translate: 0 48px;
+  }
+
+  .gap-layer-foundation.is-active {
+    translate: 0 -6px;
+  }
+
+  .gap-layer-enterprise.is-active {
+    translate: 0 -60px;
+  }
+
+  .gap-stack-axis {
+    left: 14px;
+  }
+
+  .gap-legend {
+    padding: 8px 12px 14px;
+  }
+
+  .gap-legend-row {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+
+  .gap-legend-metric {
+    grid-column: 2;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding-top: 8px;
+  }
+
+  .gap-legend-metric .gap-metric-bar {
+    width: 88px;
+  }
+
+  .gap-legend-metric em {
+    order: 2;
   }
 
   .gap-cta {

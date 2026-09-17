@@ -31,6 +31,15 @@ type ContactFormState = {
 type SubmitState = 'idle' | 'sending' | 'success' | 'error'
 type ServiceLens = 'problem' | 'approach' | 'outcome' | 'impact'
 
+type GapLayerCopy = {
+  id: 'experimental' | 'foundation' | 'enterprise'
+  kicker: string
+  title: string
+  text: string
+  level: string
+  pills?: string[]
+}
+
 const LINKEDIN_URL = import.meta.env.VITE_LINKEDIN_URL ?? 'https://www.linkedin.com/'
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID ?? ''
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID ?? ''
@@ -136,6 +145,8 @@ function App() {
   const [submitState, setSubmitState] = useState<SubmitState>('idle')
   const [submitMessage, setSubmitMessage] = useState('')
   const [serviceLens, setServiceLens] = useState<ServiceLens>('problem')
+  const [gapActiveLayer, setGapActiveLayer] = useState(0)
+  const [isGapCyclePaused, setIsGapCyclePaused] = useState(false)
   const [formOpenedAt, setFormOpenedAt] = useState(() => Date.now())
   const localeDropdownRef = useRef<HTMLDivElement | null>(null)
   const mobileNavRef = useRef<HTMLDivElement | null>(null)
@@ -209,8 +220,51 @@ function App() {
     }
   }, [copy.hero.rotatingStatements])
 
+  useEffect(() => {
+    if (isGapCyclePaused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
+
+    const intervalId = window.setInterval(() => {
+      setGapActiveLayer((current) => (current + 1) % 3)
+    }, 4200)
+
+    return () => {
+      window.clearInterval(intervalId)
+    }
+  }, [isGapCyclePaused])
+
   const currentStatement = copy.hero.rotatingStatements[statementIndex]
   const isDarkMode = themeMode === 'dark'
+
+  const gapLayers: GapLayerCopy[] = [
+    {
+      id: 'experimental',
+      kicker: copy.gap.nodes.experimental,
+      title: locale === 'fr' ? 'Modèles expérimentaux' : locale === 'es' ? 'Modelos experimentales' : 'Experimental models',
+      text: locale === 'fr' ? 'Sorties imprévisibles, contexte pauvre, confiance faible.' : locale === 'es' ? 'Resultados impredecibles, contexto débil, poca confianza.' : 'Unstable outputs, thin context, low trust.',
+      level: locale === 'fr' ? 'Faible' : locale === 'es' ? 'Baja' : 'Low',
+    },
+    {
+      id: 'foundation',
+      kicker: copy.gap.nodes.foundation,
+      title: locale === 'fr' ? 'Fondation sémantique' : locale === 'es' ? 'Base semántica' : 'Semantic foundation',
+      text: locale === 'fr' ? 'Ontologies, graphes et gouvernance relient le sens du métier.' : locale === 'es' ? 'Ontologías, grafos y gobernanza conectan el significado del negocio.' : 'Ontologies, graphs, and governance connect business meaning.',
+      level: locale === 'fr' ? 'En hausse' : locale === 'es' ? 'En alza' : 'Rising',
+    },
+    {
+      id: 'enterprise',
+      kicker: copy.gap.nodes.enterprise,
+      title: locale === 'fr' ? 'Résultat entreprise' : locale === 'es' ? 'Resultado empresarial' : 'Enterprise outcome',
+      text: locale === 'fr' ? 'Réponses fiables, traçables et utilisables à grande échelle.' : locale === 'es' ? 'Respuestas fiables, trazables y utilizables a escala.' : 'Reliable, traceable, scalable answers.',
+      level: locale === 'fr' ? 'Élevée' : locale === 'es' ? 'Alta' : 'High',
+      pills: [
+        locale === 'fr' ? 'Confiance' : locale === 'es' ? 'Confianza' : 'Trust',
+        locale === 'fr' ? 'Traçabilité' : locale === 'es' ? 'Trazabilidad' : 'Traceability',
+        locale === 'fr' ? 'Échelle' : locale === 'es' ? 'Escala' : 'Scale',
+      ],
+    },
+  ]
 
   const handleContactChange = (field: keyof ContactFormState, value: string) => {
     setContactForm((current) => ({
@@ -506,60 +560,64 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
             </a>
           </div>
 
-          <aside className="gap-visual" aria-hidden="true">
+          <aside
+            className="gap-visual"
+            aria-hidden="true"
+            onMouseEnter={() => setIsGapCyclePaused(true)}
+            onMouseLeave={() => setIsGapCyclePaused(false)}
+          >
             <div className="gap-diagram-head">
               <span>{locale === 'fr' ? 'Trajectoire de maturité' : locale === 'es' ? 'Trayectoria de madurez' : 'Maturity path'}</span>
               <strong>{locale === 'fr' ? 'Du pilote à la production' : locale === 'es' ? 'Del piloto a la producción' : 'From pilot to production'}</strong>
             </div>
 
-            <ol className="gap-track">
-              <li className="gap-node gap-node-experimental">
-                <span className="gap-node-marker">01</span>
-                <div className="gap-node-body">
-                  <span className="gap-node-kicker">{copy.gap.nodes.experimental}</span>
-                  <strong>{locale === 'fr' ? 'Modèles expérimentaux' : locale === 'es' ? 'Modelos experimentales' : 'Experimental models'}</strong>
-                  <p>{locale === 'fr' ? 'Sorties imprévisibles, contexte pauvre, confiance faible.' : locale === 'es' ? 'Resultados impredecibles, contexto débil, poca confianza.' : 'Unstable outputs, thin context, low trust.'}</p>
-                  <div className="gap-node-metric">
-                    <span>{locale === 'fr' ? 'Fiabilité' : locale === 'es' ? 'Fiabilidad' : 'Reliability'}</span>
-                    <span className="gap-metric-bar"><i /></span>
-                    <em className="gap-metric-value">{locale === 'fr' ? 'Faible' : locale === 'es' ? 'Baja' : 'Low'}</em>
-                  </div>
-                </div>
-              </li>
+            <div className="gap-stack-scene">
+              <div className="gap-stack-axis">
+                <span>{locale === 'fr' ? 'Élevée' : locale === 'es' ? 'Alta' : 'High'}</span>
+                <span>{locale === 'fr' ? 'Faible' : locale === 'es' ? 'Baja' : 'Low'}</span>
+              </div>
 
-              <li className="gap-node gap-node-foundation">
-                <span className="gap-node-marker">02</span>
-                <div className="gap-node-body">
-                  <span className="gap-node-kicker">{copy.gap.nodes.foundation}</span>
-                  <strong>{locale === 'fr' ? 'Fondation sémantique' : locale === 'es' ? 'Base semántica' : 'Semantic foundation'}</strong>
-                  <p>{locale === 'fr' ? 'Ontologies, graphes et gouvernance relient le sens du métier.' : locale === 'es' ? 'Ontologías, grafos y gobernanza conectan el significado del negocio.' : 'Ontologies, graphs, and governance connect business meaning.'}</p>
-                  <div className="gap-node-metric">
-                    <span>{locale === 'fr' ? 'Fiabilité' : locale === 'es' ? 'Fiabilidad' : 'Reliability'}</span>
-                    <span className="gap-metric-bar"><i /></span>
-                    <em className="gap-metric-value">{locale === 'fr' ? 'En hausse' : locale === 'es' ? 'En alza' : 'Rising'}</em>
+              <div className="gap-stack">
+                {gapLayers.map((layer, index) => (
+                  <div
+                    key={layer.id}
+                    className={`gap-layer gap-layer-${layer.id}${gapActiveLayer === index ? ' is-active' : ''}`}
+                  >
+                    <div className="gap-plate">
+                      <i />
+                    </div>
                   </div>
-                </div>
-              </li>
+                ))}
+              </div>
+            </div>
 
-              <li className="gap-node gap-node-enterprise">
-                <span className="gap-node-marker">03</span>
-                <div className="gap-node-body">
-                  <span className="gap-node-kicker">{copy.gap.nodes.enterprise}</span>
-                  <strong>{locale === 'fr' ? 'Résultat entreprise' : locale === 'es' ? 'Resultado empresarial' : 'Enterprise outcome'}</strong>
-                  <p>{locale === 'fr' ? 'Réponses fiables, traçables et utilisables à grande échelle.' : locale === 'es' ? 'Respuestas fiables, trazables y utilizables a escala.' : 'Reliable, traceable, scalable answers.'}</p>
-                  <div className="gap-node-metric">
-                    <span>{locale === 'fr' ? 'Fiabilité' : locale === 'es' ? 'Fiabilidad' : 'Reliability'}</span>
-                    <span className="gap-metric-bar"><i /></span>
-                    <em className="gap-metric-value">{locale === 'fr' ? 'Élevée' : locale === 'es' ? 'Alta' : 'High'}</em>
+            <div className="gap-legend">
+              {gapLayers.map((layer, index) => (
+                <div
+                  key={layer.id}
+                  className={`gap-legend-row gap-row-${layer.id}${gapActiveLayer === index ? ' is-active' : ''}`}
+                  onMouseEnter={() => setGapActiveLayer(index)}
+                >
+                  <span className="gap-legend-marker">0{index + 1}</span>
+                  <div className="gap-legend-body">
+                    <span className="gap-legend-kicker">{layer.kicker}</span>
+                    <strong>{layer.title}</strong>
+                    <p>{layer.text}</p>
+                    {layer.pills && (
+                      <div className="gap-legend-pills">
+                        {layer.pills.map((pill) => (
+                          <span key={pill}>{pill}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <div className="gap-node-pills">
-                    <span>{locale === 'fr' ? 'Confiance' : locale === 'es' ? 'Confianza' : 'Trust'}</span>
-                    <span>{locale === 'fr' ? 'Traçabilité' : locale === 'es' ? 'Trazabilidad' : 'Traceability'}</span>
-                    <span>{locale === 'fr' ? 'Échelle' : locale === 'es' ? 'Escala' : 'Scale'}</span>
+                  <div className="gap-legend-metric">
+                    <em>{layer.level}</em>
+                    <span className="gap-metric-bar"><i /></span>
                   </div>
                 </div>
-              </li>
-            </ol>
+              ))}
+            </div>
           </aside>
         </div>
       </section>

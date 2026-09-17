@@ -186,12 +186,12 @@ export const appCopy: Record<Locale, AppContent> = {
       secondary: 'Explore Our Approach',
       rotatingLabel: 'Strategic thesis',
       rotatingStatements: [
-        'AI is not the foundation. Knowledge is.',
-        'Most organizations need architecture before agents.',
-        'Better models do not solve fragmented knowledge.',
-        'Enterprise AI begins with shared meaning.',
-        'Your knowledge graph is more important than your chatbot.',
-        'Structure precedes intelligence.',
+        'AI is the interface. Knowledge is the infrastructure.',
+        'Data is the raw material. Ontology is the language.',
+        'The knowledge graph is the connective tissue.',
+        'Governance makes intelligence defensible.',
+        'You do not have a data shortage. You have a meaning shortage.',
+        'Better models do not solve disconnected knowledge.',
       ],
     },
     clients: {
@@ -242,8 +242,8 @@ export const appCopy: Record<Locale, AppContent> = {
       title:
         'If AI has disappointed your organization, you are likely deploying experimental models instead of enterprise architecture.',
       paragraphs: [
-        'Most enterprise AI initiatives stall in the proof-of-concept stage. This is not a failure of artificial intelligence. It is a failure of information architecture. When advanced models are connected to fragmented databases, siloed spreadsheets, and inconsistent terminology, they hallucinate, fail to retrieve, and lose executive trust.',
-        'There is a predictable path forward. By shifting your focus from the model to the semantic foundation - connecting your data through robust ontologies and knowledge graphs - your AI transitions from an unpredictable novelty into a reliable, deterministic asset.',
+        'Your enterprise does not have a data shortage. It has a meaning shortage. When advanced models are pointed at abundant but disconnected data - siloed systems, competing definitions, and undocumented relationships - they cannot reliably understand how any of it relates to the business. So they hallucinate, retrieve the wrong context, and lose executive trust.',
+        'The path forward is layered. Data engineering gets information into shape. Semantic architecture gives it meaning. Knowledge graphs connect it. Governance makes it trustworthy. AI turns it into action. Shift your focus from the model to this foundation, and AI moves from an unpredictable novelty to a reliable, defensible asset.',
       ],
       cta: 'Bridge the Enterprise Gap',
       nodes: {
@@ -419,12 +419,12 @@ export const appCopy: Record<Locale, AppContent> = {
       secondary: 'Découvrir notre approche',
       rotatingLabel: 'Thèse stratégique',
       rotatingStatements: [
-        'L\'IA n\'est pas la base. La connaissance l\'est.',
-        'La plupart des organisations ont besoin d\'architecture avant les agents.',
-        'De meilleurs modèles ne résolvent pas une connaissance fragmentée.',
-        'L\'IA d\'entreprise commence par un sens partagé.',
-        'Votre graphe de connaissances compte plus que votre chatbot.',
-        'La structure précède l\'intelligence.',
+        'L\'IA est l\'interface. La connaissance est l\'infrastructure.',
+        'Les données sont la matière première. L\'ontologie est le langage.',
+        'Le graphe de connaissances est le tissu conjonctif.',
+        'La gouvernance rend l\'intelligence défendable.',
+        'Vous ne manquez pas de données. Vous manquez de sens.',
+        'De meilleurs modèles ne résolvent pas une connaissance déconnectée.',
       ],
     },
     clients: {
@@ -475,8 +475,8 @@ export const appCopy: Record<Locale, AppContent> = {
       title:
         'Si l\'IA a déçu votre organisation, vous déployez probablement des modèles expérimentaux au lieu d\'une architecture d\'entreprise.',
       paragraphs: [
-        'La plupart des initiatives IA d\'entreprise s\'arrêtent au stade du proof-of-concept. Ce n\'est pas un échec de l\'intelligence artificielle. C\'est un échec de l\'architecture de l\'information. Lorsque des modèles avancés sont connectés à des bases fragmentées, des tableurs isolés et une terminologie incohérente, ils hallucinent, ne retrouvent pas le bon contexte et perdent la confiance des décideurs.',
-        'La voie à suivre est prévisible. En déplaçant l\'attention du modèle vers la fondation sémantique - en reliant vos données via des ontologies robustes et des graphes de connaissances - votre IA passe d\'une nouveauté imprévisible à un actif fiable et déterministe.',
+        'Votre entreprise ne manque pas de données. Elle manque de sens. Lorsque des modèles avancés sont pointés vers des données abondantes mais déconnectées - systèmes cloisonnés, définitions concurrentes et relations non documentées - ils ne peuvent pas comprendre de façon fiable comment tout cela se relie au métier. Ils hallucinent, retrouvent le mauvais contexte et perdent la confiance des décideurs.',
+        'La voie à suivre est stratifiée. L\'ingénierie des données met l\'information en forme. L\'architecture sémantique lui donne du sens. Les graphes de connaissances la relient. La gouvernance la rend digne de confiance. L\'IA la transforme en action. Déplacez l\'attention du modèle vers cette fondation, et l\'IA passe d\'une nouveauté imprévisible à un actif fiable et défendable.',
       ],
       cta: 'Combler l\'écart d\'entreprise',
       nodes: {
@@ -652,12 +652,12 @@ export const appCopy: Record<Locale, AppContent> = {
       secondary: 'Explorar nuestro enfoque',
       rotatingLabel: 'Tesis estratégica',
       rotatingStatements: [
-        'La IA no es la base. El conocimiento sí.',
-        'La mayoría de las organizaciones necesitan arquitectura antes que agentes.',
-        'Mejores modelos no resuelven conocimiento fragmentado.',
-        'La IA empresarial comienza con significado compartido.',
-        'Tu grafo de conocimiento importa más que tu chatbot.',
-        'La estructura precede a la inteligencia.',
+        'La IA es la interfaz. El conocimiento es la infraestructura.',
+        'Los datos son la materia prima. La ontología es el lenguaje.',
+        'El grafo de conocimiento es el tejido conectivo.',
+        'La gobernanza hace defendible la inteligencia.',
+        'No tienes escasez de datos. Tienes escasez de significado.',
+        'Mejores modelos no resuelven conocimiento desconectado.',
       ],
     },
     clients: {
@@ -708,8 +708,8 @@ export const appCopy: Record<Locale, AppContent> = {
       title:
         'Si la IA ha decepcionado a tu organización, probablemente estás desplegando modelos experimentales en lugar de arquitectura empresarial.',
       paragraphs: [
-        'La mayoría de las iniciativas de IA empresarial se quedan en la etapa de proof-of-concept. Esto no es un fallo de la inteligencia artificial. Es un fallo de la arquitectura de la información. Cuando modelos avanzados se conectan a bases de datos fragmentadas, hojas de cálculo aisladas y terminología inconsistente, alucinan, no recuperan el contexto correcto y pierden la confianza ejecutiva.',
-        'Hay un camino predecible. Al cambiar el foco del modelo a la base semántica - conectando tus datos mediante ontologías robustas y grafos de conocimiento - tu IA pasa de ser una novedad impredecible a un activo confiable y determinista.',
+        'Tu empresa no tiene escasez de datos. Tiene escasez de significado. Cuando modelos avanzados apuntan a datos abundantes pero desconectados -sistemas aislados, definiciones que compiten y relaciones sin documentar- no pueden entender de forma fiable cómo se relaciona todo eso con el negocio. Por eso alucinan, recuperan el contexto equivocado y pierden la confianza ejecutiva.',
+        'El camino a seguir es por capas. La ingeniería de datos pone la información en forma. La arquitectura semántica le da significado. Los grafos de conocimiento la conectan. La gobernanza la hace confiable. La IA la convierte en acción. Cambia el foco del modelo a esta base, y la IA pasa de ser una novedad impredecible a un activo fiable y defendible.',
       ],
       cta: 'Cerrar la brecha empresarial',
       nodes: {
