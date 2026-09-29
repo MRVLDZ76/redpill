@@ -13,6 +13,7 @@
   --card-shadow-strong: 0 18px 44px rgba(8, 14, 10, 0.11);
   --shell-width: 1440px;
   --shell-gutter: 24px;
+  --mono: 'SFMono-Regular', 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
   font-family: 'Inter', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -57,20 +58,13 @@ body::before {
     linear-gradient(90deg, color-mix(in srgb, var(--text) 2.6%, transparent) 1px, transparent 1px),
     linear-gradient(color-mix(in srgb, var(--text) 2.6%, transparent) 1px, transparent 1px);
   background-size: 132px 132px;
-  mask-image: radial-gradient(circle at 50% 18%, black, transparent 72%);
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
   pointer-events: none;
   z-index: -1;
 }
 
 body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(60% 42% at 88% 4%, color-mix(in srgb, var(--red) 6%, transparent), transparent 70%),
-    radial-gradient(52% 40% at 6% 96%, color-mix(in srgb, var(--green) 5%, transparent), transparent 72%);
-  pointer-events: none;
-  z-index: -1;
+  content: none;
 }
 
 a {

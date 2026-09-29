@@ -158,11 +158,6 @@ function App() {
   }, [themeMode])
 
   useEffect(() => {
-    setStatementIndex(0)
-    setStatementVisible(true)
-  }, [locale])
-
-  useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
       const target = event.target as Node
 
@@ -189,10 +184,6 @@ function App() {
       window.removeEventListener('keydown', handleEscape)
     }
   }, [])
-
-  useEffect(() => {
-    setIsMobileNavOpen(false)
-  }, [locale])
 
   useEffect(() => {
     document.documentElement.lang = locale
@@ -236,6 +227,14 @@ function App() {
 
   const currentStatement = copy.hero.rotatingStatements[statementIndex]
   const isDarkMode = themeMode === 'dark'
+
+  const handleLocaleChange = (nextLocale: Locale) => {
+    setLocale(nextLocale)
+    setStatementIndex(0)
+    setStatementVisible(true)
+    setIsMobileNavOpen(false)
+    setIsLocaleMenuOpen(false)
+  }
 
   const gapLayers: GapLayerCopy[] = [
     {
@@ -352,7 +351,7 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
     console.error('Email send error:', error)
     
     if (error && typeof error === 'object' && 'text' in error) {
-      console.error('Error details:', (error as any).text)
+      console.error('Error details:', (error as { text: unknown }).text)
     }
     
     setSubmitState('error')
@@ -367,8 +366,8 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
           <img
             className="brand-mark"
             src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png"
-            width={1347}
-            height={433}
+            width={673}
+            height={216}
             alt=""
             aria-hidden="true"
             loading="eager"
@@ -411,8 +410,7 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
                     type="button"
                     className={locale === option ? 'locale-dropdown-item is-active' : 'locale-dropdown-item'}
                     onClick={() => {
-                      setLocale(option)
-                      setIsLocaleMenuOpen(false)
+                      handleLocaleChange(option)
                     }}
                     role="menuitemradio"
                     aria-checked={locale === option}
@@ -885,8 +883,8 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
             <img
               className="brand-mark"
               src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png"
-              width={1347}
-              height={433}
+              width={673}
+            height={216}
               alt=""
               aria-hidden="true"
               loading="lazy"

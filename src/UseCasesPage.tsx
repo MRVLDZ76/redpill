@@ -134,8 +134,8 @@ function UseCasesPage() {
           <img
             className="brand-mark"
             src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png"
-            width={1347}
-            height={433}
+            width={673}
+            height={216}
             alt=""
             aria-hidden="true"
             loading="eager"
@@ -305,8 +305,8 @@ function UseCasesPage() {
             <img
               className="brand-mark"
               src="/logos/REDPILL-logo-assets/REDPILL-transparent-2x-cropped.png"
-              width={1347}
-              height={433}
+              width={673}
+            height={216}
               alt=""
               aria-hidden="true"
               loading="lazy"

@@ -201,6 +201,7 @@ function KnowledgeGraph({ locale }: KnowledgeGraphProps) {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({})
   const [positions, setPositions] = useState<Record<string, Position>>({})
+  const [canvasSize, setCanvasSize] = useState({ width: 1, height: 1 })
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [scrollStage, setScrollStage] = useState(0)
   const [tooltip, setTooltip] = useState<TooltipState>(null)
@@ -281,6 +282,10 @@ function KnowledgeGraph({ locale }: KnowledgeGraphProps) {
       }
 
       const containerRect = wrapperRef.current.getBoundingClientRect()
+      setCanvasSize({
+        width: Math.max(1, wrapperRef.current.clientWidth),
+        height: Math.max(1, wrapperRef.current.clientHeight),
+      })
       const nextPositions = Object.fromEntries(
         Object.entries(itemRefs.current)
           .filter(([, element]) => Boolean(element))
@@ -445,7 +450,7 @@ function KnowledgeGraph({ locale }: KnowledgeGraphProps) {
           <span>{content.zones[2]}</span>
         </div>
 
-        <svg className="knowledge-connections" viewBox={`0 0 ${Math.max(1, wrapperRef.current?.clientWidth ?? 1)} ${Math.max(1, wrapperRef.current?.clientHeight ?? 1)}`} preserveAspectRatio="none" aria-hidden="true">
+        <svg className="knowledge-connections" viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`} preserveAspectRatio="none" aria-hidden="true">
           {connectorPaths.map((path) => (
             <path key={path.key} d={path.d} className={path.active ? 'connector-path connector-path-active' : 'connector-path'} />
           ))}
