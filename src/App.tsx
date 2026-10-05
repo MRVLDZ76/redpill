@@ -9,6 +9,9 @@ import {
   Sun,
   TriangleAlert,
   ChevronDown,
+  Bot,
+  Files,
+  Waypoints,
 } from 'lucide-react'
 import './App.css'
 import KnowledgeGraph from './KnowledgeGraph.tsx'
@@ -50,7 +53,11 @@ const CONTACT_MIN_SUBMIT_DELAY_MS = 3_000
 const CONTACT_LAST_SENT_KEY = 'contact-last-sent-at'
 const HOME_URL = 'https://redpill.software/'
 const HOME_OG_IMAGE_URL = 'https://redpill.software/og-image.png'
-
+const failureIcons = {
+  waypoints: Waypoints,
+  files: Files,
+  bot: Bot,
+};
 type IndustryOption = {
   en: string
   fr: string
@@ -508,25 +515,33 @@ const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
         </div>
       </section>
 
-      <section className="failure-section section-shell" aria-labelledby="failure-title">
+     <section className="failure-section section-shell" aria-labelledby="failure-title">
         <div className="section-heading section-heading-single">
           <span className="eyebrow">{copy.failure.eyebrow}</span>
           <h2 id="failure-title">{copy.failure.title}</h2>
         </div>
 
         <div className="failure-grid">
-          {copy.failure.items.map((item) => (
-            <article key={item.title} className="failure-card">
-              <TriangleAlert size={18} strokeWidth={1.9} aria-hidden="true" />
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          ))}
+          {copy.failure.items.map((item) => {
+            const Icon = failureIcons[item.icon] ?? TriangleAlert;
+
+            return (
+              <article key={item.title} className="failure-card">
+                <Icon
+                  size={18}
+                  strokeWidth={1.9}
+                  aria-hidden="true"
+                />
+
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            );
+          })}
         </div>
 
         <p className="failure-summary">{copy.failure.summary}</p>
       </section>
-
       <section className="approach-section section-shell" id="approach" aria-labelledby="approach-title">
         <div className="section-heading section-heading-single">
           <span className="eyebrow">{copy.approach.eyebrow}</span>

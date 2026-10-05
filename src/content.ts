@@ -19,6 +19,11 @@ type ServicePillarCopy = {
   impact: string
   icon: ComponentType<{ size?: number; strokeWidth?: number }>
 }
+type failureIcons = {
+  waypoints: ComponentType<{ size?: number; strokeWidth?: number }>
+  files: ComponentType<{ size?: number; strokeWidth?: number }>
+  bot: ComponentType<{ size?: number; strokeWidth?: number }>
+}
 
 type AppContent = {
   meta: {
@@ -56,7 +61,7 @@ type AppContent = {
   failure: {
     eyebrow: string
     title: string
-    items: Array<{ title: string; text: string }>
+    items: Array<{ title: string; text: string; icon: keyof failureIcons }>
     summary: string
   }
   approach: {
@@ -201,17 +206,21 @@ export const appCopy: Record<Locale, AppContent> = {
     },
     failure: {
       eyebrow: 'Why AI Projects Fail',
-      title: 'Most enterprise AI programs underperform for structural reasons, not model reasons.',
+      title:
+        'Most enterprise AI programs underperform for structural reasons, not model reasons.',
       items: [
         {
+          icon: 'waypoints',
           title: 'Lack of Shared Meaning',
           text: 'Different teams describe the same entities, events, and outcomes in different ways, which breaks alignment before AI starts.',
         },
         {
+          icon: 'files',
           title: 'Fragmented Knowledge',
           text: 'Critical context remains trapped in documents, systems, and conversations that never converge into a usable architecture.',
         },
         {
+          icon: 'bot',
           title: 'Premature AI Adoption',
           text: 'Organizations deploy models and assistants before building the semantic and data foundations required for reliable outcomes.',
         },
@@ -437,14 +446,17 @@ export const appCopy: Record<Locale, AppContent> = {
       title: 'La plupart des programmes IA d\'entreprise sous-performent pour des raisons structurelles, pas pour des raisons de modèle.',
       items: [
         {
+          icon: 'waypoints',
           title: 'Absence de sens partagé',
           text: 'Différentes équipes décrivent les mêmes entités, événements et résultats de façons différentes, ce qui casse l\'alignement avant même l\'IA.',
         },
         {
+          icon: 'files',
           title: 'Connaissance fragmentée',
           text: 'Le contexte critique reste piégé dans des documents, systèmes et conversations qui ne convergent jamais vers une architecture exploitable.',
         },
         {
+          icon: 'bot',
           title: 'Adoption IA prématurée',
           text: 'Les organisations déploient des modèles et assistants avant d\'avoir construit les fondations sémantiques et data nécessaires à des résultats fiables.',
         },
@@ -670,14 +682,17 @@ export const appCopy: Record<Locale, AppContent> = {
       title: 'La mayoría de los programas de IA empresarial rinden por debajo de lo esperado por razones estructurales, no por el modelo.',
       items: [
         {
+          icon: 'waypoints',
           title: 'Falta de significado compartido',
           text: 'Distintos equipos describen las mismas entidades, eventos y resultados de maneras distintas, lo que rompe la alineación antes de que la IA empiece.',
         },
         {
+          icon: 'files',
           title: 'Conocimiento fragmentado',
           text: 'El contexto crítico permanece atrapado en documentos, sistemas y conversaciones que nunca convergen en una arquitectura utilizable.',
         },
         {
+          icon: 'bot',
           title: 'Adopción prematura de IA',
           text: 'Las organizaciones despliegan modelos y asistentes antes de construir las bases semánticas y de datos necesarias para resultados fiables.',
         },
